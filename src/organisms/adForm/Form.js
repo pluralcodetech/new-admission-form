@@ -194,18 +194,18 @@ const Form = () => {
           return {
             ...prev,
             amountDue:
-              fee[0]?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 .onsite_course_fee_ngn,
             subtotal:
-              fee[0]?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 .onsite_course_fee_ngn,
-            vat: fee[0]?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
               ?.onsite_course_vat_fee_ngn,
             transaction:
-              fee[0]?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 ?.onsite_course_transaction_fee_ngn,
             total:
-              fee[0]?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 ?.onsite_course_total_fee_ngn,
             sign: <span>&#8358;</span>,
           };
@@ -217,21 +217,21 @@ const Form = () => {
       ) {
         setEachFee({
           subtotal:
-            fee[0]?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               ?.onsite_part_payment_course_fee,
           amountDue:
-            fee[0]?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               ?.onsite_part_payment_course_fee_ngn_due_amount,
-          vat: fee[0]?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
+          vat: fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
             .onsite_part_payment_course_vat_fee_ngn,
           transaction:
-            fee[0]?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               .onsite_part_payment_course_transaction_fee_ngn,
           total:
-            fee[0]?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               .onsite_part_payment_course_total_fee_ngn,
           balance:
-            fee[0]?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               ?.onsitebalance_ngn,
           sign: <span>&#8358;</span>,
         });
@@ -242,18 +242,18 @@ const Form = () => {
       ) {
         setEachFee({
           amountDue:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_fee_ngn,
           subtotal:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_fee_ngn,
-          vat: fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
+          vat: fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
             ?.virtual_course_vat_fee_ngn,
           transaction:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_transaction_fee_ngn,
           total:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_total_fee_ngn,
           sign: <span>&#8358;</span>,
         });
@@ -264,21 +264,21 @@ const Form = () => {
       ) {
         setEachFee({
           subtotal:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtual_part_payment_course_fee,
           amountDue:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtual_part_payment_course_fee_ngn_due_amount,
-          vat: fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
+          vat: fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
             ?.virtual_part_payment_course_vat_fee_ngn,
           transaction:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtual_part_payment_course_transaction_fee_ngn,
           total:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtual_part_payment_course_total_fee_ngn,
           balance:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtualbalance_ngn,
           sign: <span>&#8358;</span>,
         });
@@ -288,18 +288,18 @@ const Form = () => {
       if (formD.currency === "usd" && formD.payment_plan === "full_payment") {
         setEachFee({
           amountDue:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
               ?.virtual_course_fee_usd,
           subtotal:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
               ?.virtual_course_fee_usd,
-          vat: fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+          vat: fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
             ?.virtual_course_vat_fee_usd,
           transaction:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
               ?.virtual_course_transaction_fee_usd,
           total:
-            fee[0]?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
               ?.virtual_course_total_fee_usd,
           sign: <span>&#36;</span>,
           usd: "(USD)",
@@ -310,21 +310,21 @@ const Form = () => {
       ) {
         setEachFee({
           subtotal:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
               ?.virtual_part_payment_course_fee,
           amountDue:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
               ?.virtual_part_payment_course_fee_usd_due_amount,
-          vat: fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+          vat: fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
             ?.virtual_part_payment_course_vat_fee_usd,
           transaction:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
               ?.virtual_part_payment_course_transaction_fee_usd,
           total:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
               ?.virtual_part_payment_course_total_fee_usd,
           balance:
-            fee[0]?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
               ?.virtualbalance_usd,
           sign: <span>&#36;</span>,
           usd: "(USD)",
@@ -357,7 +357,7 @@ const Form = () => {
           
           localStorage.setItem("formD",JSON.stringify(formD))
           localStorage.setItem("totalA",JSON.stringify(eachFee.total))
-          localStorage.setItem("courseI",JSON.stringify(fee[0].id))
+          localStorage.setItem("courseI",JSON.stringify(fee.id))
           localStorage.setItem("balance",JSON.stringify(eachFee.balance))
         const raw = JSON.stringify({
           "tx_ref": "plc-" + rn(options),
@@ -513,7 +513,7 @@ const Form = () => {
                   </option>
                 </select>
               </div>
-              <div className="w-full flex flex-col md:flex-row gap-6">
+              <div className="w-full flex flex-col md:flex-row lg:gap-6">
                 <div className="w-full ad-input flex flex-col py-3">
                   <label className="textdark pb-2">Country</label>
                   <select
@@ -547,7 +547,7 @@ const Form = () => {
                       if (state.length > 0) {
                         
                           return (
-                            <option className="w-full pe-7" key={eachS.name}>
+                            <option className="w-full lg:pe-7" key={eachS.name}>
                               {eachS.name}
                             </option>
                           );
@@ -1028,7 +1028,7 @@ const Form = () => {
                 <div className="w-full textdark">
                   <Text
                     className="text-xl lg:text-2xl"
-                    children={fee[0]?.name}
+                    children={fee?.name}
                   />
                   <p className="lg:text-lg">
                     Cohort | <span className="reg lg:text-lg">March 2023</span>

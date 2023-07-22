@@ -22,7 +22,7 @@ const Payment = ({
   const params = new URLSearchParams(window.location.search);
   const tx_ref = params.get("tx_ref");
   // const transaction_id= params.get("transaction_id")
-
+console.log(tx_ref)
   const [msg, setMsg] = useState();
 
   const myHeaders = new Headers();
@@ -30,7 +30,7 @@ const Payment = ({
   const detail = JSON.parse(localStorage.getItem("formD"));
   const tot = JSON.parse(localStorage.getItem("totalA"));
   const courseid = JSON.parse(localStorage.getItem("courseI"));
-  const bal = JSON.parse(localStorage.getItem("balance"));
+  const bal = localStorage.getItem("balance");
   const raw = JSON.stringify({
     name: detail.full_name,
     email: detail.email,
@@ -48,7 +48,7 @@ const Payment = ({
     age: detail.age_range,
     payment_plan: detail.payment_plan,
     course_id: courseid,
-    balance:bal === "" ? null : bal
+    balance:bal === undefined ? null : bal
 
   });
 
