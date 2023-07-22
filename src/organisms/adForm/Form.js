@@ -43,12 +43,6 @@ const Form = () => {
     usd: "",
   });
 
-  useEffect(()=>{
-    if (state.length > 0 ){
-      
-      setState(state)
-    }else{setState([])}
-  },[state])
   const handleRead = () => {
     setReadMore(!readMore);
   };
@@ -80,7 +74,7 @@ const Form = () => {
       .then((response) => response.json())
       .then((result) => {
         setCountry(result.data);
-      });
+      }).catch((err) => console.log(err));
   }, []);
 
   // courses list
@@ -90,7 +84,7 @@ const Form = () => {
       .then((result) => {
         setCertCourse(result.certcourses);
         setDiplomaCourse(result.diplomacourses);
-      });
+      }).catch((err) => console.log(err));
   }, []);
 
   // cohort list
@@ -164,6 +158,9 @@ const Form = () => {
 
   useEffect(() => {
     function gg() {
+      if(formD.country){
+        country.map(coun=>coun).filter(each=>each.name===formD.country && setState(each.states))
+      }
       if (
         formD.currency === "ngn" &&
         formD.classF === "physical_class" &&
@@ -311,10 +308,10 @@ const Form = () => {
       }
     }
     gg();
-  }, [formD, fee]);
+  }, [formD, fee,country]);
 
+  console.log(fee)
   console.log(state)
-  // console.log(checked)
 
   //submit the form
   var rn = require("random-number");
@@ -376,7 +373,7 @@ const Form = () => {
     } else {
       setErrMsg("Box must be checked!");
     }
-    // <Payment name = {formD.full_name} email={formD.email} phone_number = {formD.phone_number} course_of_interest = {formD.course} modeL = {formD.classF} country = {formD.country} state = {formD.state} currency = {formD.currency} cohort_id = {formD.cohort} total = {eachFee.total} program_type = {formD.course_level} academy_level = {formD.academy_level} age = {formD.age_range} payment_plan = {formD.payment_plan}  />
+    
   };
 console.log(formD)
 
@@ -507,19 +504,19 @@ console.log(formD)
                     value={formD.country}
                     onChange={handleForm}
                     required
-                    onClick={(e) => {
-                      const eachState = country
-                        .map((country) => country)
-                        .filter(
-                          (each) => each.name === e.target.value && each.states
-                        );
-                      setState(eachState);
-                    }}
+                    // onClick={(e) => {
+                    //   const eachState = country
+                    //     .map((country) => country)
+                    //     .filter(
+                    //       (each) => each.name === e.target.value && each.states
+                    //     );
+                    //   setState(eachState);
+                    // }}
                     className="w-full border dp px-7 py-4 outline-offset-2 outline-slate-500"
                   >
                     {country?.map((each) => {
                       return (
-                        <option key={each.iso3}  value={each.name}>
+                        <option key={each.iso3} value={each.name}>
                           {each.name}
                         </option>
                       );
@@ -537,15 +534,15 @@ console.log(formD)
                     className="w-full border dp px-7 py-4 outline-offset-2 outline-slate-500"
                   >
                     {state?.map((eachS) => {
-                      if (eachS.states.length > 0) {
-                        const a = eachS.states.map((e) => {
+                      if (state.length > 0) {
+                        // const a = eachS.states.map((e) => {
                           return (
-                            <option className="w-full pe-7" key={e.name}>
-                              {e.name}
+                            <option className="w-full pe-7" key={eachS.name}>
+                              {eachS.name}
                             </option>
                           );
-                        });
-                        return a;
+                        // });
+                        
                       } else {
                         return <option value="">No state</option>;
                       }
