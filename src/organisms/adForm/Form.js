@@ -20,8 +20,8 @@ const Form = () => {
 
   const numFor = Intl.NumberFormat("en-US");
 
-  const [certCourse, setCertCourse] = useState();
-  const [diplomaCourse, setDiplomaCourse] = useState();
+  const [certCourse, setCertCourse] = useState([]);
+  const [diplomaCourse, setDiplomaCourse] = useState([]);
 
   const [readMore, setReadMore] = useState(false);
   const [country, setCountry] = useState([]);
@@ -111,7 +111,18 @@ const Form = () => {
     );
   });
   //diploma courses
-
+  const dipC = diplomaCourse?.map((eachC) => {
+    return (
+      <option
+        key={eachC.id}
+        className="w-full"
+        value={eachC.name}
+        id={eachC.id}
+      >
+        {eachC.name}
+      </option>
+    );
+  })
   const handleForm = (event) => {
     const { name, value } = event.target;
     // dropdown for course level
@@ -163,15 +174,15 @@ const Form = () => {
       }
       
         if (formD.course_level === "entry") {
-          const eachFee = certCourse
+          certCourse
             .map((fee) => fee)
-            .filter((each) => each.name === formD.course);
-          setFee(eachFee);
-        } else {
-          const cF = diplomaCourse
+            .filter((each) => each.name === formD.course && setFee(each));
+         
+        } else if (formD.course_level === "diploma"){
+          diplomaCourse
             .map((fee) => fee)
-            .filter((each) => each.name === formD.course);
-          setFee(cF);
+            .filter((each) => each.name === formD.course && setFee(each));
+          
         }
       
       if (
@@ -323,8 +334,7 @@ const Form = () => {
     gg();
   }, [formD, fee,country,certCourse,diplomaCourse]);
 
-  console.log(fee)
-  console.log(state)
+ 
 
   //submit the form
   var rn = require("random-number");
@@ -373,12 +383,7 @@ const Form = () => {
         fetch(url, reqMethod)
           .then((response) => response.json())
           .then((result) =>{ 
-            console.log(result)
-            // setPayLink(result.data.link)
-
-              window.location.replace(result.data.link)
-              
-            
+              window.location.replace(result.data.link)               
           })
           .catch((err) => console.log(err));
       
@@ -388,7 +393,7 @@ const Form = () => {
     }
     
   };
-console.log(formD)
+
 
 
   return (
@@ -822,18 +827,7 @@ console.log(formD)
 
                   {formD.course_level === "entry"
                     ? certC
-                    : diplomaCourse?.map((eachC) => {
-                        return (
-                          <option
-                            key={eachC.id}
-                            className="w-full"
-                            value={eachC.name}
-                            id={eachC.id}
-                          >
-                            {eachC.name}
-                          </option>
-                        );
-                      })}
+                    : dipC}
                 </select>
               </div>
               <div className="ad-input flex flex-col py-3">
