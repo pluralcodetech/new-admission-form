@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import Text from "../../atom/Text";
-import plogo from "../../images/plc-icon.png";
+// import plogo from "../../images/plc-icon.png";
 // import { Link } from "react-router-dom";
 import Images from "../../atom/Images";
 import chkgreen from "../../images/Group.png";
+import Payment from "../../pages/Payment";
 
 const Form = () => {
   const liveD = useRef();
@@ -14,6 +15,8 @@ const Form = () => {
   const nairaref = useRef();
   const payBody = useRef();
   const partFee = useRef();
+
+  
 
   const numFor = Intl.NumberFormat("en-US");
 
@@ -26,6 +29,7 @@ const Form = () => {
   const [cohort, setCohort] = useState([]);
   const [fee, setFee] = useState([]);
   const [errMsg, setErrMsg] = useState();
+  const [payLink, setPayLink] = useState()
   // const [loading, setLoading] = useState(false);
 
   const [eachFee, setEachFee] = useState({
@@ -303,7 +307,7 @@ const Form = () => {
     gg();
   }, [formD, fee]);
 
-  // console.log(formD)
+  console.log(fee)
   // console.log(checked)
 
   //submit the form
@@ -314,7 +318,6 @@ const Form = () => {
 
   const handleSubmit = () => {
     if (checked) {
-      // const token =process.env.REACT_APP_FLUTTER_TOKEN
       // setLoading(true);
       if (
         eachFee.total === "" ||
@@ -322,44 +325,52 @@ const Form = () => {
         formD.email === "" ||
         formD.phone_number === "" ||
         formD.full_name === ""
-      ) {
-        setErrMsg("All fields must not be empty!");
-      } else {
+        ) {
+          setErrMsg("All fields must not be empty!");
+        } else {
         const raw = JSON.stringify({
-          "tx-ref": "plc-" + rn(options),
-          amount: eachFee.total,
-          currency: formD.currency.toUpperCase(),
-          "redirect-url": "/payment",
-          customer: {
-            email: formD.email,
-            phonenumber: formD.phone_number,
-            name: formD.full_name,
-          },
-          customizations: {
-            title: formD.course + " Enrollment",
-            logo: plogo,
-          },
+          "tx_ref": "plc-" + rn(options),
+          "amount": eachFee.total,
+          "currency": formD.currency.toUpperCase(),
+          "title": formD.course + " Enrollment",
+          "redirect_url": "https://bright-cuchufli-2253ee.netlify.app/payment",
+          "email": formD.email,
+          "phonenumber": formD.phone_number,
+          "name": formD.full_name,
         });
-
+        localStorage.setItem("formD",JSON.stringify(formD))
+        sessionStorage.setItem("formm",JSON.stringify(formD))
         const myHeaders = new Headers();
-        myHeaders.append("Bearer", process.env.REACT_APP_FLUTTER_TOKEN);
+        myHeaders.append("Content-Type", "application/json");
 
         const reqMethod = {
           method: "POST",
-          headers: myHeaders,
-          body:raw
+          headers:myHeaders,
+          body: raw,
         };
 
-        const url = "https://api.flutterwave.com/v3/payments"
+        const url = "https://backend.pluralcode.institute/initialise-payment";
 
-        fetch(url,reqMethod)
-        .then(response=>response.json())
-        .then(result=>console.log(result))
+        fetch(url, reqMethod)
+          .then((response) => response.json())
+          .then((result) =>{ 
+            console.log(result)
+            setPayLink(result.data.link)
+
+              window.location.replace(result.data.link)
+              
+            
+          })
+          .catch((err) => console.log(err));
+      
       }
     } else {
       setErrMsg("Box must be checked!");
     }
+    <Payment name = {formD.full_name} email={formD.email} phone_number = {formD.phone_number} course_of_interest = {formD.course} modeL = {formD.classF} country = {formD.country} state = {formD.state} currency = {formD.currency} cohort_id = {formD.cohort} total = {eachFee.total} program_type = {formD.course_level} academy_level = {formD.academy_level} age = {formD.age_range} payment_plan = {formD.payment_plan} course_id={fee.length === 0 ? null :fee[0].id} />
   };
+console.log(formD)
+
 
   return (
     <div className="w-full bg-white p-4 md:p-6 lg:px-16 lg:py-14">
@@ -517,7 +528,6 @@ const Form = () => {
                     className="w-full border dp px-7 py-4 outline-offset-2 outline-slate-500"
                   >
                     {state?.map((eachS) => {
-                      console.log(eachS.states);
                       if (eachS.states.length > 0) {
                         const a = eachS.states.map((e) => {
                           return (
@@ -528,7 +538,7 @@ const Form = () => {
                         });
                         return a;
                       } else {
-                        return <option>No state</option>;
+                        return <option value="">No state</option>;
                       }
                     })}
                   </select>
@@ -842,10 +852,13 @@ const Form = () => {
                 >
                   <option value="">Select your Cohort</option>
                   {cohort?.map((each) => {
+                    
                     return (
-                      <option className="w-full" key={each.name}>
+                      <option className="w-full" value={each.id} key={each.name}>
+                        
                         {each.name}
                       </option>
+
                     );
                   })}
                 </select>
@@ -1124,6 +1137,8 @@ const Form = () => {
           </div>
         </div>
       </div>
+      
+      
     </div>
   );
 };
