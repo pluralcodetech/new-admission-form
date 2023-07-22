@@ -161,6 +161,19 @@ const Form = () => {
       if(formD.country){
         country.map(coun=>coun).filter(each=>each.name===formD.country && setState(each.states))
       }
+      
+        if (formD.course_level === "entry") {
+          const eachFee = certCourse
+            .map((fee) => fee)
+            .filter((each) => each.name === formD.course);
+          setFee(eachFee);
+        } else {
+          const cF = diplomaCourse
+            .map((fee) => fee)
+            .filter((each) => each.name === formD.course);
+          setFee(cF);
+        }
+      
       if (
         formD.currency === "ngn" &&
         formD.classF === "physical_class" &&
@@ -308,7 +321,7 @@ const Form = () => {
       }
     }
     gg();
-  }, [formD, fee,country]);
+  }, [formD, fee,country,certCourse,diplomaCourse]);
 
   console.log(fee)
   console.log(state)
@@ -504,14 +517,6 @@ console.log(formD)
                     value={formD.country}
                     onChange={handleForm}
                     required
-                    // onClick={(e) => {
-                    //   const eachState = country
-                    //     .map((country) => country)
-                    //     .filter(
-                    //       (each) => each.name === e.target.value && each.states
-                    //     );
-                    //   setState(eachState);
-                    // }}
                     className="w-full border dp px-7 py-4 outline-offset-2 outline-slate-500"
                   >
                     {country?.map((each) => {
@@ -535,13 +540,13 @@ console.log(formD)
                   >
                     {state?.map((eachS) => {
                       if (state.length > 0) {
-                        // const a = eachS.states.map((e) => {
+                        
                           return (
                             <option className="w-full pe-7" key={eachS.name}>
                               {eachS.name}
                             </option>
                           );
-                        // });
+                        
                         
                       } else {
                         return <option value="">No state</option>;
@@ -809,21 +814,6 @@ console.log(formD)
                   value={formD.course}
                   onChange={handleForm}
                   required
-                  onClick={(e) => {
-                    if (formD.course_level === "entry") {
-                      const eachFee = certCourse
-                        .map((fee) => fee)
-                        .filter((each) => each.name === e.target.value);
-                      console.log(eachFee);
-                      setFee(eachFee);
-                    } else {
-                      const cF = diplomaCourse
-                        .map((fee) => fee)
-                        .filter((each) => each.name === e.target.value);
-                      console.log(cF);
-                      setFee(cF);
-                    }
-                  }}
                   className="w-full cursor-pointer flex items-center dp border px-7 py-4 outline-offset-2 outline-slate-500"
                 >
                   <option value="ccc" className="dptext">
