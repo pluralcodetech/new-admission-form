@@ -12,24 +12,26 @@ const Payment = ({name,email,phone_number,course_of_interest,modeL,country,state
 
     const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
+ const detail = JSON.parse(localStorage.getItem("formD"))
+ const tot = JSON.parse(localStorage.getItem("totalA"))
+ const courseid = JSON.parse(localStorage.getItem("courseI"))
     const raw = JSON.stringify({
-        "name":name,
-        "email": email,
-        "phone_number":phone_number,
-        "course_of_interest":course_of_interest,
-        "mode_of_learning": modeL,
-        "country":country,
-        "state":state,
-        "currency":currency,
-        "cohort_id":cohort_id,
-        "amount_paid":total,
-        "program_type":program_type,
+        "name":detail.full_name,
+        "email": detail.email,
+        "phone_number":detail.phone_number,
+        "course_of_interest":detail.course,
+        "mode_of_learning": detail.classF,
+        "country":detail.country,
+        "state":detail.state=== "" ? null : detail.state,
+        "currency":detail.currency.toUpperCase(),
+        "cohort_id":detail.cohort,
+        "amount_paid":tot,
+        "program_type":detail.course_level,
         "flutterwave_reference_id":tx_ref,
-        "academy_level":academy_level,
-        "age":age,
-        "payment_plan":payment_plan,
-        "course_id":course_id
+        "academy_level":detail.academy_level,
+        "age":detail.age_range,
+        "payment_plan":detail.payment_plan,
+        "course_id":courseid
     })
 
     const url = "https://backend.pluralcode.institute/enrol";
@@ -43,11 +45,11 @@ const Payment = ({name,email,phone_number,course_of_interest,modeL,country,state
         .then(response=>response.json())
         .then(result=>{
             console.log(result)
-            if(result.data.code === 200){
-            setMsg(result.data.message)
-            }
+            // if(result.code === 200){
+            setMsg(result.message)
+            // }
         })
-        .then(err=>console.log(err))
+        .catch(err=>console.log(err))
    
   return (
     <div>

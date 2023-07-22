@@ -4,7 +4,7 @@ import Text from "../../atom/Text";
 // import { Link } from "react-router-dom";
 import Images from "../../atom/Images";
 import chkgreen from "../../images/Group.png";
-import Payment from "../../pages/Payment";
+// import Payment from "../../pages/Payment";
 
 const Form = () => {
   const liveD = useRef();
@@ -29,7 +29,7 @@ const Form = () => {
   const [cohort, setCohort] = useState([]);
   const [fee, setFee] = useState([]);
   const [errMsg, setErrMsg] = useState();
-  const [ setPayLink] = useState()
+  // const [payLink, setPayLink] = useState()
   // const [loading, setLoading] = useState(false);
 
   const [eachFee, setEachFee] = useState({
@@ -328,6 +328,10 @@ const Form = () => {
         ) {
           setErrMsg("All fields must not be empty!");
         } else {
+          
+          localStorage.setItem("formD",JSON.stringify(formD))
+          localStorage.setItem("totalA",JSON.stringify(eachFee.total))
+          localStorage.setItem("courseI",JSON.stringify(fee[0].id))
         const raw = JSON.stringify({
           "tx_ref": "plc-" + rn(options),
           "amount": eachFee.total,
@@ -338,8 +342,6 @@ const Form = () => {
           "phonenumber": formD.phone_number,
           "name": formD.full_name,
         });
-        localStorage.setItem("formD",JSON.stringify(formD))
-        sessionStorage.setItem("formm",JSON.stringify(formD))
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -355,7 +357,7 @@ const Form = () => {
           .then((response) => response.json())
           .then((result) =>{ 
             console.log(result)
-            setPayLink(result.data.link)
+            // setPayLink(result.data.link)
 
               window.location.replace(result.data.link)
               
@@ -367,7 +369,7 @@ const Form = () => {
     } else {
       setErrMsg("Box must be checked!");
     }
-    <Payment name = {formD.full_name} email={formD.email} phone_number = {formD.phone_number} course_of_interest = {formD.course} modeL = {formD.classF} country = {formD.country} state = {formD.state} currency = {formD.currency} cohort_id = {formD.cohort} total = {eachFee.total} program_type = {formD.course_level} academy_level = {formD.academy_level} age = {formD.age_range} payment_plan = {formD.payment_plan} course_id={fee.length === 0 ? null :fee[0].id} />
+    // <Payment name = {formD.full_name} email={formD.email} phone_number = {formD.phone_number} course_of_interest = {formD.course} modeL = {formD.classF} country = {formD.country} state = {formD.state} currency = {formD.currency} cohort_id = {formD.cohort} total = {eachFee.total} program_type = {formD.course_level} academy_level = {formD.academy_level} age = {formD.age_range} payment_plan = {formD.payment_plan}  />
   };
 console.log(formD)
 
