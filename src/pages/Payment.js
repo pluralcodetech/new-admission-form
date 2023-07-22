@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 const Payment = ({name,email,phone_number,course_of_interest,modeL,country,state,currency,cohort_id, total,program_type,academy_level, age, payment_plan, course_id}) => {
 
