@@ -43,6 +43,12 @@ const Form = () => {
     usd: "",
   });
 
+  useEffect(()=>{
+    if (state.length > 0 ){
+      
+      setState(state)
+    }else{setState([])}
+  },[state])
   const handleRead = () => {
     setReadMore(!readMore);
   };
@@ -307,7 +313,7 @@ const Form = () => {
     gg();
   }, [formD, fee]);
 
-  console.log(fee)
+  console.log(state)
   // console.log(checked)
 
   //submit the form
@@ -449,16 +455,16 @@ console.log(formD)
                   <option value="doctorate" className="dptext">
                     Doctorate (PhD)
                   </option>
-                  <option value="high" className="dptext">
+                  <option value="high/secondary" className="dptext">
                     High School / Secondary School
                   </option>
-                  <option value="under" className="dptext">
+                  <option value="undergraduate" className="dptext">
                     Under Graduate
                   </option>
-                  <option value="junior" className="dptext">
+                  <option value="junior/middle" className="dptext">
                     Junior / Middle School
                   </option>
-                  <option value="post" className="dptext">
+                  <option value="postgraduate" className="dptext">
                     Post Graduate
                   </option>
                 </select>
@@ -513,7 +519,7 @@ console.log(formD)
                   >
                     {country?.map((each) => {
                       return (
-                        <option key={each.iso3} value={each.name}>
+                        <option key={each.iso3}  value={each.name}>
                           {each.name}
                         </option>
                       );
