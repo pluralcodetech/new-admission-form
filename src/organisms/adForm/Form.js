@@ -29,7 +29,7 @@ const Form = () => {
   const [cohort, setCohort] = useState([]);
   const [fee, setFee] = useState([]);
   const [errMsg, setErrMsg] = useState();
-  const [payLink, setPayLink] = useState()
+  const [ setPayLink] = useState()
   // const [loading, setLoading] = useState(false);
 
   const [eachFee, setEachFee] = useState({

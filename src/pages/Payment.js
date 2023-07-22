@@ -38,7 +38,7 @@ const Payment = ({name,email,phone_number,course_of_interest,modeL,country,state
         headers: myHeaders,
         body: raw
     }
-    useEffect(()=>{
+    
         fetch(url,reqMethod)
         .then(response=>response.json())
         .then(result=>{
@@ -48,7 +48,7 @@ const Payment = ({name,email,phone_number,course_of_interest,modeL,country,state
             }
         })
         .then(err=>console.log(err))
-    },[])
+   
   return (
     <div>
       <h1 className='text-3xl text-center py-4'>{msg}</h1>
