@@ -332,6 +332,7 @@ const Form = () => {
           localStorage.setItem("formD",JSON.stringify(formD))
           localStorage.setItem("totalA",JSON.stringify(eachFee.total))
           localStorage.setItem("courseI",JSON.stringify(fee[0].id))
+          localStorage.setItem("balance",JSON.stringify(eachFee.balance))
         const raw = JSON.stringify({
           "tx_ref": "plc-" + rn(options),
           "amount": eachFee.total,
