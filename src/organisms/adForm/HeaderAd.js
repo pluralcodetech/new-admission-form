@@ -14,7 +14,7 @@ const HeaderAd = () => {
               <p className="adtext text-white">
                 Admission <span className="seccolor">Form</span>
               </p>
-              <p className="hero-text pt-3 leading-9 text-white text-sm md:text-2xl text-start">
+              <p className="hero-text pt-3 lg:leading-9 text-white text-sm md:text-2xl text-start">
                 Kindly fill this out the form below to register & pay for your chosen course.<span className="hidden lg:inline leading-9"> Once your enrollment is Complete, you will receive an email
                   address with your admission package, receipts, welcome letter,
                   links to student community, course materials & login access to

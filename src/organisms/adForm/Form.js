@@ -53,6 +53,10 @@ const Form = () => {
   const handleCheck = () => {
     setChecked(!checked);
   };
+  const [checkedpart, setCheckedpart] = useState(false);
+  const handleCheckpart = () => {
+    setCheckedpart(!checkedpart);
+  };
 
   const [formD, setFormD] = useState({
     full_name: "",
@@ -359,9 +363,64 @@ const Form = () => {
         formD.phone_number === "" ||
         formD.full_name === "" ||
         formD.cohort === "" ||
-        formD.course === "" 
+        formD.course === "" ||
+        checkedpart === false
         ) {
-          setErrMsg("All fields must not be empty!");
+          setErrMsg("All fields must not be empty! & check all boxes");
+        } else {
+          
+          localStorage.setItem("formD",JSON.stringify(formD))
+          localStorage.setItem("totalA",JSON.stringify(eachFee.total))
+          localStorage.setItem("courseI",JSON.stringify(fee.id))
+          localStorage.setItem("balance",JSON.stringify(eachFee.balance))
+        const raw = JSON.stringify({
+          "tx_ref": "plc-" + rn(options),
+          "amount": eachFee.total,
+          "currency": formD.currency.toUpperCase(),
+          "title": formD.course + " Enrollment",
+          "redirect_url": "https://bright-cuchufli-2253ee.netlify.app/payment",
+          "email": formD.email,
+          "phonenumber": formD.phone_number,
+          "name": formD.full_name,
+        });
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const reqMethod = {
+          method: "POST",
+          headers:myHeaders,
+          body: raw,
+        };
+
+        const url = "https://backend.pluralcode.institute/initialise-payment";
+
+        fetch(url, reqMethod)
+          .then((response) => response.json())
+          .then((result) =>{ 
+              window.location.replace(result.data.link)               
+          })
+          .catch((err) => console.log(err));
+      
+      }
+    } else {
+      setErrMsg("Box must be checked!");
+    }
+    
+  };
+  const handleSubmitsmall = () => {
+    if (checked) {
+      // setLoading(true);
+      if (
+        eachFee.total === "" ||
+        formD.currency === "" ||
+        formD.email === "" ||
+        formD.phone_number === "" ||
+        formD.full_name === "" ||
+        formD.cohort === "" ||
+        formD.course === "" ||
+        checkedpart === false
+        ) {
+          setErrMsg("All fields must not be empty! & check all boxes");
         } else {
           
           localStorage.setItem("formD",JSON.stringify(formD))
@@ -407,7 +466,7 @@ const Form = () => {
 
   return (
     <>
-    <FormNav subtotal={eachFee.total} amountdue= {eachFee.amountDue} vat ={eachFee.vat} transaction= {eachFee.transaction} balance ={eachFee.balance} total={eachFee.total} name={fee?.name} sign={eachFee.sign} usd ={eachFee.usd} part={formD.payment_plan} course={formD.course} />
+    <FormNav subtotal={eachFee.total} amountdue= {eachFee.amountDue} vat ={eachFee.vat} transaction= {eachFee.transaction} balance ={eachFee.balance} total={eachFee.total} name={fee?.name} sign={eachFee.sign} usd ={eachFee.usd} form={formD} />
     
     <HeaderAd/>
     <div className="w-full bg-white p-4 md:p-6 lg:px-16 lg:py-14">
@@ -554,7 +613,6 @@ const Form = () => {
                     name="state"
                     value={formD.state}
                     onChange={handleForm}
-                    required
                     className="w-full border dp p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
                     {state?.map((eachS) => {
@@ -940,7 +998,10 @@ const Form = () => {
                     ref={partpay}
                     style={{ color: "#ff0000" }}
                   >
-                    <div className="w-4 h-3 border paychk"></div>
+                    {/* <div className="w-4 h-3 border paychk"></div> */}
+                    <input type="checkbox" 
+                    checked={checkedpart}
+                    onChange={handleCheckpart}/>
                     <Text
                       className="w-full text-sm"
                       children="Kindly note that installment payment requires 70% down payment and Balance 4 weeks into the start of class."
@@ -1015,7 +1076,7 @@ const Form = () => {
               </div>
               {
                 <p
-                  className="text-3xl pt-4 text-center"
+                  className="text-2xl lg:text-3xl pt-4 text-center"
                   style={{ color: "#f00" }}
                 >
                   {errMsg}
@@ -1023,7 +1084,7 @@ const Form = () => {
               }
               <div className="block lg:hidden w-full md:w-96 m-auto rounded-xl py-4">
                 <button
-                  onClick={handleSubmit}
+                  onClick={handleSubmitsmall}
                   className="secbgcolor w-full py-3 md:py-4 text-white rounded-xl"
                 >
                   Pay {eachFee.sign}{" "}

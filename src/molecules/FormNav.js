@@ -15,8 +15,8 @@ const FormNav = ({
   sign,
   usd,
   name,
-  part,
-  course
+  form,
+  
 }) => {
   const mob = useRef();
   const part2 = useRef();
@@ -24,17 +24,17 @@ const FormNav = ({
   const numFor = Intl.NumberFormat("en-US");
   useEffect(()=>{
 
-      if (course !== ""){
+      if (form.course !== ""){
           mob.current.style.display="block"
         }
-        if (part === "part_payment") {
+        if (form.payment_plan === "part_payment" && form.course_level==="diploma") {
             part2.current.style.display = "block";
         }else{part2.current.style.display="none"} 
-    },[course,part])
+    },[form.payment_plan,form.course,form.course_level])
 
   return (
     <div className="bgcolor sticky top-0 z-10 ">
-      <div className="px-4 py-6 md:p-6 lg:px-16 lg:pt-6 lg:pb-0">
+      <div className="px-4 py-6 md:p-6 lg:px-16 lg:pt-6 lg:pb-4">
         <Images src={adlogo} className=" w-44 lg:w-56" />
       </div>
       
@@ -48,7 +48,7 @@ const FormNav = ({
                 {sign} {numFor.format(isNaN(subtotal) ? 0 : subtotal)} {usd}
               </span>
             </p>
-           {part && <div className="part-payment-fee" ref={part2}>
+           <div className="part-payment-fee" ref={part2}>
               <p>
                 Amt to pay:{" "}
                 <span className="fee">
@@ -61,7 +61,7 @@ const FormNav = ({
                   {sign} {numFor.format(isNaN(balance) ? 0 : balance)} {usd}
                 </span>
               </p>
-            </div>}
+            </div>
             <p>
               Sub total:{" "}
               <span className="fee">
@@ -69,8 +69,9 @@ const FormNav = ({
               </span>
             </p>
             <p>
-              VAT: <span className="fee"></span>
+              VAT: <span className="fee">
               {sign} {numFor.format(isNaN(vat) ? 0 : vat)} {usd}
+              </span>
             </p>
             <p>
               Transaction Fee:{" "}
