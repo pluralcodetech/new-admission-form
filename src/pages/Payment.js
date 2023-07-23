@@ -38,7 +38,7 @@ console.log(tx_ref)
     course_of_interest: detail.course,
     mode_of_learning: detail.classF,
     country: detail.country,
-    state: detail.state === "" ? null : detail.state,
+    state: detail.state === "" ? "null" : detail.state,
     currency: detail.currency.toUpperCase(),
     cohort_id: detail.cohort,
     amount_paid: tot,
@@ -48,10 +48,10 @@ console.log(tx_ref)
     age: detail.age_range,
     payment_plan: detail.payment_plan,
     course_id: courseid,
-    balance:bal === undefined ? null : bal
+    balance:bal === undefined ? "null" : bal
 
   });
-
+console.log(raw)
 //   let url;
 // if (detail.course_level === "diploma" && detail.payment_plan === "full_payment"){
 

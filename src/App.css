@@ -34,6 +34,10 @@
   font-family: Gilroy-boldItalic;
   src: url(./font/Gilroy-BoldItalic.ttf);
 }
+@font-face {
+  font-family: Gilroy-light;
+  src: url(./font/Gilroy-Light.ttf);
+}
 body{
   font-family: Gilroy-semibold;
 }
@@ -57,10 +61,12 @@ body{
 }
 .formright{
   width: 100%;
-  border: 2px solid #000;
-  padding: 2.5rem;
+  border: 1px solid #000;
+  padding: 2rem;
   background: #FFF;
   border-radius: 16px;
+  position: sticky;
+  top: 5%;
 }
 .secbgcolor{
   background-color: #F8991D;
@@ -118,7 +124,6 @@ body{
   padding-left: 35px;
   margin-bottom: 12px;
   cursor: pointer;
-  /* font-size: 18px; */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -229,12 +234,37 @@ font-size: 13px;
   0%{ opacity: 0.4;}
   100%{opacity: 1;}
 }
+.play{
+  top: 45%;
+  left: 43%;
+}
+.mobile-summary{
+  display: none;
+}
+select::-ms-expand {
+  display: none;
+}
+select {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0.5em 2em 0.5em 0.5em;
+  border: 1px solid #eee;
+  font: inherit;
+  line-height: inherit;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-image: url(./images/angle-small-down\ 1.png);
+  background-position: right 10px top 1em, right 10px top 1em;
+  background-size:25px 25px 25px 25px;
+}
 
 
 @media (min-width:700px) and (max-width:997px) {
   .adtext{
     font-size: 50px;
-    text-align: center;
   }
   .per-info{
     font-size: 30px;
@@ -248,18 +278,38 @@ font-size: 13px;
   .formleft, .formright{
     padding: 2rem;
   }
+  .mobile-summary{
+    background-color: #fff;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
+  }
+  .mobile-summary .title{
+    font-family: Gilroy-medium;
+    color:#2F2F2F;
+  }
+  .mobile-summary .fee{
+    font-family:Gilroy-light ;
+    color: #2F2F2F;
+  }
+  .mobile-summary .smalltot{
+    color: #2F2F2F;
+    font-family: Gilroy-bold;
+  }
 }
 
 @media (max-width:600px) {
   .adtext{
-    font-size: 30px;
-    text-align: center;
+    font-size: 40px;
   }
   .hero-text{
     width: 100%;
   }
   .per-info{
-    font-size: 25px;
+    font-size: 18px;
+  }
+  .enroltxt{
+    width:270px;
+    margin: auto;
+    font-size: 10px;
   }
   .courseD{
     font-size: 22px;
@@ -269,5 +319,45 @@ font-size: 13px;
   }
   .formleft, .formright{
     padding: 1.2rem;
+  }
+  .container{
+    padding-left: 17px;
+  }
+  .checkmark {
+    height: 10px;
+    width: 10px;
+    top:7px
+  }
+  .ten{
+    font-size: 14px;
+  }
+  .ad-input{
+    font-family: Gilroy-regular;
+    font-size: 14px;
+  }
+  .refund{
+    font-size: 12px;
+  }
+  .ad-input input::placeholder, .dptext{
+    font-size: 12px;
+  }
+  .ad-input input, .ad-input .dp {
+    border-radius: 8px;
+  }
+  .mobile-summary{
+    background-color: #fff;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
+  }
+  .mobile-summary .title{
+    font-family: Gilroy-medium;
+    color:#2F2F2F;
+  }
+  .mobile-summary .fee{
+    font-family:Gilroy-light ;
+    color: #2F2F2F;
+  }
+  .mobile-summary .smalltot{
+    color: #2F2F2F;
+    font-family: Gilroy-bold;
   }
 }

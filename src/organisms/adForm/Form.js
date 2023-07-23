@@ -4,7 +4,8 @@ import Text from "../../atom/Text";
 // import { Link } from "react-router-dom";
 import Images from "../../atom/Images";
 import chkgreen from "../../images/Group.png";
-// import Payment from "../../pages/Payment";
+import FormNav from "../../molecules/FormNav";
+import HeaderAd from "./HeaderAd";
 
 const Form = () => {
   const liveD = useRef();
@@ -15,6 +16,7 @@ const Form = () => {
   const nairaref = useRef();
   const payBody = useRef();
   const partFee = useRef();
+ 
 
   
 
@@ -152,7 +154,12 @@ const Form = () => {
     if (value === "part_payment") {
       partpay.current.style.display = "flex";
       partFee.current.style.display = "block";
+      
     } else if (name === "payment_plan" && value !== "part_payment") {
+      partpay.current.style.display = "none";
+      partFee.current.style.display = "none";
+    }else if (value === "entry"){
+      formD.payment_plan = "full_payment"
       partpay.current.style.display = "none";
       partFee.current.style.display = "none";
     }
@@ -350,7 +357,9 @@ const Form = () => {
         formD.currency === "" ||
         formD.email === "" ||
         formD.phone_number === "" ||
-        formD.full_name === ""
+        formD.full_name === "" ||
+        formD.cohort === "" ||
+        formD.course === "" 
         ) {
           setErrMsg("All fields must not be empty!");
         } else {
@@ -397,17 +406,22 @@ const Form = () => {
 
 
   return (
+    <>
+    <FormNav subtotal={eachFee.total} amountdue= {eachFee.amountDue} vat ={eachFee.vat} transaction= {eachFee.transaction} balance ={eachFee.balance} total={eachFee.total} name={fee?.name} sign={eachFee.sign} usd ={eachFee.usd} part={formD.payment_plan} course={formD.course} />
+    
+    <HeaderAd/>
     <div className="w-full bg-white p-4 md:p-6 lg:px-16 lg:py-14">
       {/* certificate details */}
-      <div className="w-full  cert-body pt-16 flex flex-col lg:flex-row lg:gap-2">
+      <div className="w-full  cert-body pt-8 lg:pt-16 flex flex-col lg:flex-row lg:gap-2">
         <div className="w-full formleft">
           <div>
             <Text
               className="per-info text-center textcolor"
               children="Fill the form below"
             />
-            <form className="pt-4">
-              <div className="ad-input flex flex-col py-3">
+            <form className="pt-0 lg:pt-4">
+            <p className="lg:hidden pb-2 enroltxt textcolor text-center">Once your enrollment is complete, you will receive an email address with your admission package, receipts, welcome letter, links to student community, course materials & login access to your Student Learning Portal.</p>
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Full Name</label>
                 <input
                   type="text"
@@ -416,10 +430,10 @@ const Form = () => {
                   value={formD.full_name}
                   onChange={handleForm}
                   required
-                  className="px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 />
               </div>
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Email *</label>
                 <input
                   type="email"
@@ -428,10 +442,10 @@ const Form = () => {
                   value={formD.email}
                   onChange={handleForm}
                   required
-                  className="px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 />
               </div>
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Phone Number</label>
                 <input
                   type="text"
@@ -440,17 +454,17 @@ const Form = () => {
                   value={formD.phone_number}
                   onChange={handleForm}
                   required
-                  className="px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 />
               </div>
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Highest Academy Level</label>
                 <select
                   name="academy_level"
                   value={formD.academy_level}
                   onChange={handleForm}
                   required
-                  className="w-full cursor-pointer flex items-center dp border px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="w-full cursor-pointer flex items-center dp border p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 >
                   <option value="ccc" className="dptext">
                     Select highest academy level
@@ -484,14 +498,14 @@ const Form = () => {
                   </option>
                 </select>
               </div>
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Age Range</label>
                 <select
                   name="age_range"
                   value={formD.age_range}
                   onChange={handleForm}
                   required
-                  className="w-full cursor-pointer flex items-center dp border px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="w-full cursor-pointer flex items-center dp border p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 >
                   <option value="ccc" className="dptext">
                     Select your age range
@@ -513,8 +527,8 @@ const Form = () => {
                   </option>
                 </select>
               </div>
-              <div className="w-full flex flex-col md:flex-row lg:gap-6">
-                <div className="w-full ad-input flex flex-col py-3">
+              <div className="w-full flex flex-row gap-4 lg:gap-6">
+                <div className="w-full ad-input flex flex-col py-2 lg:py-3">
                   <label className="textdark pb-2">Country</label>
                   <select
                     placeholder="Enter your country"
@@ -522,7 +536,7 @@ const Form = () => {
                     value={formD.country}
                     onChange={handleForm}
                     required
-                    className="w-full border dp px-7 py-4 outline-offset-2 outline-slate-500"
+                    className="w-full border dp p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
                     {country?.map((each) => {
                       return (
@@ -533,7 +547,7 @@ const Form = () => {
                     })}
                   </select>
                 </div>
-                <div className="w-full ad-input flex flex-col py-3">
+                <div className="w-full ad-input flex flex-col py-2 lg:py-3">
                   <label className="textdark pb-2">State</label>
                   <select
                     placeholder="Enter your state"
@@ -541,7 +555,7 @@ const Form = () => {
                     value={formD.state}
                     onChange={handleForm}
                     required
-                    className="w-full border dp px-7 py-4 outline-offset-2 outline-slate-500"
+                    className="w-full border dp p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
                     {state?.map((eachS) => {
                       if (state.length > 0) {
@@ -561,12 +575,12 @@ const Form = () => {
                 </div>
               </div>
 
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Course Level</label>
                 <div className="flex gap-8">
                   <div className="">
-                    <label className="container text-base">
-                      Diploma (Beginner to Advanced)
+                    <label className="container text-base ten">
+                      Diploma <span className="text-xs eight">(Beginner to Advanced)</span>
                       <input
                         type="radio"
                         name="course_level"
@@ -579,8 +593,8 @@ const Form = () => {
                     </label>
                   </div>
                   <div className="">
-                    <label className="container text-base">
-                      Entry Level (Beginner)
+                    <label className="container text-base ten">
+                      Entry Level <span className="eight text-xs">(Beginner)</span>
                       <input
                         type="radio"
                         required
@@ -594,7 +608,7 @@ const Form = () => {
                   </div>
                 </div>
                 <div className="entry-details" ref={entryref}>
-                  <p className="green text-sm pt-2">
+                  <p className="green text-xs lg:text-sm pt-2">
                     The Entry Level classes focus on foundational knowledge in a
                     dynamic 2 months program. What you learn here will be enough
                     to start you career as an intern or entry level techie. Live
@@ -604,7 +618,7 @@ const Form = () => {
                   </p>
                   <span
                     onClick={handleRead}
-                    className=" cursor-pointer nb green2 text-sm underline"
+                    className=" cursor-pointer nb green2 text-xs lg:text-sm underline"
                   >
                     {readMore ? "Show Less" : "Read More"}
                   </span>
@@ -613,54 +627,54 @@ const Form = () => {
                   {readMore && (
                     <div className="mt-4 md:w-80 border border-black rounded-3xl p-4 md:p-8">
                       <Text
-                        className="textcolor bold text-2xl text-center"
+                        className="textcolor bold text-base lg:text-2xl text-center"
                         children="Benefits"
                       />
-                      <div className="flex gap-4 py-4 items-center">
+                      <div className="flex gap-4 py-2 items-center">
                         <div>
-                          <Images className="w-4" src={chkgreen} />
+                          <Images className="w-3 lg:w-4" src={chkgreen} />
                         </div>
-                        <Text className="" children="Career Guidance" />
+                        <Text className="text-sm lg:text-base" children="Career Guidance" />
                       </div>
                       <div className="flex gap-4 py-2 items-center">
                         <div>
-                          <Images className="w-4" src={chkgreen} />
+                          <Images className="w-3 lg:w-4" src={chkgreen} />
                         </div>
                         <Text
-                          className=""
+                          className="text-sm lg:text-base"
                           children="2 Months Expert Training"
                         />
                       </div>
                       <div className="flex gap-4 py-2 items-center">
                         <div>
-                          <Images className="w-4" src={chkgreen} />
+                          <Images className="w-3 lg:w-4" src={chkgreen} />
                         </div>
-                        <Text className="" children="Soft Skills Training" />
+                        <Text className="text-sm lg:text-base" children="Soft Skills Training" />
                       </div>
                       <div className="flex gap-4 py-2 items-center">
                         <div>
-                          <Images className="w-4" src={chkgreen} />
+                          <Images className="w-3 lg:w-4" src={chkgreen} />
                         </div>
-                        <Text className="" children="Access to Community" />
+                        <Text className="text-sm lg:text-base" children="Access to Community" />
                       </div>
                       <div className="flex gap-4 py-2 items-center">
                         <div>
-                          <Images className="w-4" src={chkgreen} />
+                          <Images className="w-3 lg:w-4" src={chkgreen} />
                         </div>
-                        <Text className="" children="Weekly Live Classes" />
+                        <Text className="text-sm lg:text-base" children="Weekly Live Classes" />
                       </div>
                       <div className="flex gap-4 py-2 items-center">
                         <div>
-                          <Images className="w-4" src={chkgreen} />
+                          <Images className="w-3 lg:w-4" src={chkgreen} />
                         </div>
-                        <Text className="" children="Capstone Projects" />
+                        <Text className="text-sm lg:text-base" children="Capstone Projects" />
                       </div>
                       <div className="flex gap-4 py-2 items-center">
                         <div>
-                          <Images className="w-4" src={chkgreen} />
+                          <Images className="w-3 lg:w-4" src={chkgreen} />
                         </div>
                         <Text
-                          className=""
+                          className="text-sm lg:text-base"
                           children="Certificate of Achievement"
                         />
                       </div>
@@ -669,7 +683,7 @@ const Form = () => {
                 </div>
 
                 <div className="diploma-details" ref={diplomaref}>
-                  <p className="green text-sm pt-2">
+                  <p className="green text-xs lg:text-sm pt-2">
                     The Diploma seek to take you on a premium journey from
                     beginner to advanced level in your chosen field. 4 months
                     live classes, 2 semesters, high-level projects, added 1-2
@@ -681,127 +695,127 @@ const Form = () => {
                   </p>
                   <span
                     onClick={handleRead}
-                    className="cursor-pointer nb green2 text-sm underline"
+                    className="cursor-pointer nb green2 text-xs lg:text-sm underline"
                   >
                     {readMore ? "Show Less" : "Read More"}
                   </span>
 
                   {/*Diploma Benefits */}
                   {readMore && (
-                    <div className="mt-4 border border-black rounded-3xl p-4 lg:p-8">
+                    <div className="mt-4 border border-black rounded-3xl p-2 lg:p-8">
                       <Text
-                        className="textcolor pb-4 bold text-2xl text-center"
+                        className="textcolor pb-4 bold text-base lg:text-2xl text-center"
                         children="Benefits"
                       />
-                      <div className="flex flex-col lg:flex-row">
+                      <div className="flex flex-row">
                         <div className="w-full">
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Career Guidance"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="4 Months Expert Training"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Soft Skills Training"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Access to Community"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Weekly Live Classes"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Access to Dozens of Expert videos "
                             />
                           </div>
                         </div>
                         <div className="w-full">
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Global Diploma Recognition"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Professional Internship (1-2 months)"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="High-Level Capstone Projects"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Higher Earning Potential"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Beginner-Friendly"
                             />
                           </div>
-                          <div className="flex gap-4 py-2 items-center">
-                            <div className="w-4">
+                          <div className="flex gap-2 lg:gap-4 py-2 items-center">
+                            <div className="w-3 lg:w-4">
                               <Images className="w-full" src={chkgreen} />
                             </div>
                             <Text
-                              className="w-full"
+                              className="w-full text-sm lg:text-base"
                               children="Graduation/Awards Ceremony"
                             />
                           </div>
@@ -812,14 +826,14 @@ const Form = () => {
                 </div>
               </div>
 
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Course Of Interest</label>
                 <select
                   name="course"
                   value={formD.course}
                   onChange={handleForm}
                   required
-                  className="w-full cursor-pointer flex items-center dp border px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="w-full cursor-pointer flex items-center dp border p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 >
                   <option value="ccc" className="dptext">
                     Select your course of interest
@@ -830,7 +844,7 @@ const Form = () => {
                     : dipC}
                 </select>
               </div>
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Cohort (Start Month)</label>
                 <select
                   type="text"
@@ -838,7 +852,7 @@ const Form = () => {
                   name="cohort"
                   onChange={handleForm}
                   required
-                  className="w-full cursor-pointer flex items-center dp border px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="w-full cursor-pointer flex items-center dp border p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 >
                   <option value="">Select your Cohort</option>
                   {cohort?.map((each) => {
@@ -855,11 +869,11 @@ const Form = () => {
               </div>
 
               <div className="live-details" ref={liveD}>
-                <div className="ad-input flex flex-col py-3">
+                <div className="ad-input flex flex-col pt-2 lg:py-3">
                   <label className="textdark pb-2">Class Format</label>
                   <div className="flex gap-8">
                     <div className="">
-                      <label className="container text-base">
+                      <label className="container text-base ten">
                         Virtual Class
                         <input
                           type="radio"
@@ -872,7 +886,7 @@ const Form = () => {
                       </label>
                     </div>
                     <div className="physical" ref={physicalref}>
-                      <label className="container text-base">
+                      <label className="container text-base ten">
                         Physical Class
                         <input
                           type="radio"
@@ -889,11 +903,11 @@ const Form = () => {
               </div>
 
               <div className="pay-body" ref={payBody}>
-                <div className="ad-input flex flex-col py-3">
+                <div className="ad-input flex flex-col py-0 lg:py-3">
                   <label className="textdark pb-2">Select Payment Plan </label>
                   <div className="flex gap-8">
                     <div className="">
-                      <label className="container text-base">
+                      <label className="container text-base ten">
                         Full Payment
                         <input
                           type="radio"
@@ -906,7 +920,7 @@ const Form = () => {
                       </label>
                     </div>
                     <div className="">
-                      <label className="container text-base">
+                      <label className="container text-base ten">
                         Part Payment
                         <input
                           type="radio"
@@ -934,11 +948,11 @@ const Form = () => {
                   </div>
                 </div>
               </div>
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-0 lg:py-3">
                 <label className="textdark pb-2">Currency</label>
                 <div className="flex gap-8">
                   <div className="">
-                    <label className="container text-base">
+                    <label className="container text-base ten">
                       USD
                       <input
                         type="radio"
@@ -951,7 +965,7 @@ const Form = () => {
                     </label>
                   </div>
                   <div className="naira" ref={nairaref}>
-                    <label className="container text-base">
+                    <label className="container text-base ten">
                       NGN
                       <input
                         type="radio"
@@ -966,34 +980,34 @@ const Form = () => {
                 </div>
               </div>
 
-              <div className="ad-input flex flex-col py-3">
+              <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Referral Code</label>
                 <input
                   type="text"
                   placeholder="GSHJSJK"
-                  className="px-7 py-4 outline-offset-2 outline-slate-500"
+                  className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 />
               </div>
               <Text
                 className="textdark ad-input pt-4"
                 children="Refund Policy"
               />
-              <p className="refund pt-2">
+              <p className="refund lg:pt-2 ">
                 A student is ONLY entitled to a refund if for any reason,
                 Pluralcode is unable to carry out training duties for the
                 cohort, if a cohort is cancelled or if a student has
                 accidentally overpaid the cost of tuition. You can read more
                 about our student policy below.
               </p>
-              <div className="flex items-center gap-2 pt-4">
+              <div className="flex gap-2 pt-4">
                 <input
                   type="checkbox"
                   id="std_policy"
                   checked={checked}
                   onChange={handleCheck}
-                  className="cursor-pointer"
+                  className="cursor-pointer lg:w-5"
                 />
-                <label>
+                <label className="text-xs lg:text-base w-full">
                   By checking this box, you have read and agreed with
                   Pluralcode's
                   <span className="seccolor"> student policy</span>.
@@ -1007,24 +1021,34 @@ const Form = () => {
                   {errMsg}
                 </p>
               }
+              <div className="block lg:hidden w-full md:w-96 m-auto rounded-xl py-4">
+                <button
+                  onClick={handleSubmit}
+                  className="secbgcolor w-full py-3 md:py-4 text-white rounded-xl"
+                >
+                  Pay {eachFee.sign}{" "}
+                  {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
+                  {eachFee.usd}
+                </button>
+              </div>
             </form>
           </div>
         </div>
 
         {/* right hand side */}
-        <div className="w-full mt-8 lg:mt-0 lg:w-9/12 lg:ps-10">
+        <div className="hidden lg:block w-full mt-8 lg:mt-0 lg:w-9/12 lg:ps-10">
           <div className="formright">
             <Text
-              className="textcolor text-2xl text-center pt-8 lg:pt-0"
+              className="textcolor text-2xl text-center pt-6 lg:pt-0"
               children="Disclaimer"
             />
             <Text
-              className="reg text-center w-full md:w-96 m-auto pt-4 pb-6"
+              className="reg text-center w-full md:w-96 m-auto pt-2 pb-6"
               children="Please ensure that the name provided on the form is what you want on your certificate."
             />
             <div className="">
-              <Text className="courseD pt-4" children="Course details" />
-              <div className="flex justify-between items-center pt-4 pb-8">
+              <Text className="courseD" children="Course details" />
+              <div className="flex justify-between items-center pt-4 pb-4">
                 <div className="w-full textdark">
                   <Text
                     className="text-xl lg:text-2xl"
@@ -1059,7 +1083,7 @@ const Form = () => {
                     {eachFee.usd}
                   </p>
                 </div>
-                <div className="flex justify-between items-center pt-4 pb-8">
+                <div className="flex justify-between items-center pb-4">
                   <div className="textdark">
                     <Text
                       className="text-xl lg:text-2xl"
@@ -1113,7 +1137,7 @@ const Form = () => {
                   {eachFee.usd}
                 </p>
               </div>
-              <div className="w-full md:w-96 m-auto rounded-xl py-8">
+              <div className="w-full md:w-96 m-auto rounded-xl pt-4">
                 <button
                   onClick={handleSubmit}
                   className="secbgcolor w-full py-3 md:py-4 text-white rounded-xl"
@@ -1130,6 +1154,7 @@ const Form = () => {
       
       
     </div>
+    </>
   );
 };
 
