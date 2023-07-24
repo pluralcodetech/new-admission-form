@@ -25,6 +25,7 @@ const Payment = ({
   const tx_ref = params.get("tx_ref");
   // const transaction_id= params.get("transaction_id")
 console.log(tx_ref)
+console.log(detail)
   const [msg, setMsg] = useState();
 
   const myHeaders = new Headers();
