@@ -465,7 +465,45 @@ const Form = () => {
     }
     
   };
+ useEffect(()=>{
+  const detail = JSON.parse(localStorage.get("finalDetails"))
+  const tx_ref = JSON.parse(localStorage.get("tx"))
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  const raw = JSON.stringify({
+    name: detail.full_name,
+    email: detail.email,
+    phone_number: detail.phone_number,
+    course_of_interest: detail.course,
+    mode_of_learning: detail.classF,
+    country: detail.country,
+    state: detail.state === "" ? "null" : detail.state,
+    currency: detail.currency.toUpperCase(),
+    cohort_id: detail.cohort,
+    amount_paid: eachFee.total,
+    program_type: detail.course_level,
+    flutterwave_reference_id: tx_ref,
+    academy_level: detail.academy_level,
+    age: detail.age_range,
+    payment_plan: detail.payment_plan,
+    course_id: fee.id,
+    balance: eachFee.balance
 
+  });
+  const url = "https://backend.pluralcode.institute/enrol"
+  const reqMethod = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+  };
+
+  fetch(url, reqMethod)
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => console.log(err));
+ },[eachFee.balance,eachFee.total,fee.id])
 
 
   return (
@@ -473,7 +511,7 @@ const Form = () => {
     <FormNav subtotal={eachFee.total} amountdue= {eachFee.amountDue} vat ={eachFee.vat} transaction= {eachFee.transaction} balance ={eachFee.balance} total={eachFee.total} name={fee?.name} sign={eachFee.sign} usd ={eachFee.usd} form={formD} />
     
     <HeaderAd/>
-    <div className="hidden"><Payment detail={formD} courseid={fee.id} tot={eachFee.total} bal={eachFee.balance }/></div>
+    <div className="hidden"><Payment detail={formD} /></div>
     <div className="w-full bg-white p-4 md:p-6 lg:px-16 lg:py-14">
       {/* certificate details */}
       <div className="w-full  cert-body pt-8 lg:pt-16 flex flex-col lg:flex-row lg:gap-2">
