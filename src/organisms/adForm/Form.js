@@ -6,6 +6,7 @@ import Images from "../../atom/Images";
 import chkgreen from "../../images/Group.png";
 import FormNav from "../../molecules/FormNav";
 import HeaderAd from "./HeaderAd"
+import {BiLoaderAlt} from 'react-icons/bi'
 
 const Form = () => {
   const liveD = useRef();
@@ -16,7 +17,6 @@ const Form = () => {
   const nairaref = useRef();
   const payBody = useRef();
   const partFee = useRef();
- 
 
   
 
@@ -31,8 +31,7 @@ const Form = () => {
   const [cohort, setCohort] = useState([]);
   const [fee, setFee] = useState([]);
   const [errMsg, setErrMsg] = useState();
-  // const [payLink, setPayLink] = useState()
-  // const [loading, setLoading] = useState(false);
+  
 
   const [eachFee, setEachFee] = useState({
     subtotal: "",
@@ -53,10 +52,7 @@ const Form = () => {
   const handleCheck = () => {
     setChecked(!checked);
   };
-  // const [checkedpart, setCheckedpart] = useState(false);
-  // const handleCheckpart = () => {
-  //   setCheckedpart(!checkedpart);
-  // };
+ 
 
   const [formD, setFormD] = useState({
     full_name: "",
@@ -130,6 +126,7 @@ const Form = () => {
     );
   })
   const handleForm = (event) => {
+    setErrMsg("")
     const { name, value } = event.target;
     // dropdown for course level
     if (value === "entry") {
@@ -177,9 +174,9 @@ const Form = () => {
   };
 
   // for fee
-
   useEffect(() => {
     function gg() {
+      //sort states of each country
       if(formD.country){
         country.map(coun=>coun).filter(each=>each.name===formD.country && setState(each.states))
       }
@@ -345,19 +342,18 @@ const Form = () => {
     gg();
   }, [formD, fee,country,certCourse,diplomaCourse]);
 
- 
-
   //submit the form
   var rn = require("random-number");
   var options = {
     max: 987, // example input , yes negative values do work
   };
 
-    console.log(cohort)
+    
   const handleSubmit = (e) => {
     e.preventDefault()
     if (checked) {
       // setLoading(true);
+      const sp =document.querySelector(".spin")
       if (
         eachFee.total === "" ||
         formD.currency === "" ||
@@ -365,20 +361,22 @@ const Form = () => {
         formD.phone_number === "" ||
         formD.full_name === "" ||
         formD.cohort === "" ||
-        formD.course === "" 
+        formD.course === "" ||
+        formD.state === "" ||
+        formD.country === "" ||
+        formD.academy_level === ""||
+        formD.age_range === ""
         ) {
           setErrMsg("All fields must not be empty! & check all boxes");
         } else {
-          const uri =`https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF}&course=${formD.course}&country=${formD.country}&state=${formD.state}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort}&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level}&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range}&pay=${formD.payment_plan}`
-
-          const encoded = encodeURIComponent(uri)
           
+          sp.style.display = "block"
         const raw = JSON.stringify({
           "tx_ref": "plc-" + rn(options),
           "amount": eachFee.total,
           "currency": formD.currency.toUpperCase(),
           "title": formD.course + " Enrollment",
-          "redirect_url":encoded ,
+          "redirect_url": `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF}&course=${formD.course}&country=${formD.country}&state=${formD.state}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort}&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level}&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range}&pay=${formD.payment_plan}`,
           "email": formD.email,
           "phonenumber": formD.phone_number,
           "name": formD.full_name,
@@ -397,18 +395,18 @@ const Form = () => {
         fetch(url, reqMethod)
           .then((response) => response.json())
           .then((result) =>{ 
-            console.log(result)
-            
-              window.location.replace(result.data.link)               
+            console.log(result)      
+              window.open(result.data.link, "_blank")               
           })
           .catch((err) => console.log(err));
       }
+      sp.style.display = "none"
+      
     } else {
       setErrMsg("Box must be checked!");
     }
     
   };
-  console.log(formD)
 
 
 
@@ -547,11 +545,13 @@ const Form = () => {
                     className="w-full border dp p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
                     {country?.map((each) => {
+                      if (each.states.length > 0){
                       return (
                         <option key={each.iso3} value={each.name}>
                           {each.name}
                         </option>
-                      );
+                      );}
+                      return null
                     })}
                   </select>
                 </div>
@@ -562,21 +562,16 @@ const Form = () => {
                     name="state"
                     value={formD.state}
                     onChange={handleForm}
+                    required
                     className="w-full border dp p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
                     {state?.map((eachS) => {
-                      if (state.length > 0) {
-                        
                           return (
                             <option className="w-full lg:pe-7" key={eachS.name}>
                               {eachS.name}
                             </option>
                           );
                         
-                        
-                      } else {
-                        return <option value="">No state</option>;
-                      }
                     })}
                   </select>
                 </div>
@@ -1035,8 +1030,9 @@ const Form = () => {
               <div className="block lg:hidden w-full md:w-96 m-auto rounded-xl py-4">
                 <button
                   onClick={handleSubmit}
-                  className="secbgcolor w-full py-3 md:py-4 text-white rounded-xl"
+                  className="secbgcolor justify-center flex items-center w-full py-3 md:py-4 text-white rounded-xl"
                 >
+                  <BiLoaderAlt className="spin animate-spin text-2xl mr-4"/>
                   Pay {eachFee.sign}{" "}
                   {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
                   {eachFee.usd}
@@ -1151,8 +1147,9 @@ const Form = () => {
               <div className="w-full md:w-96 m-auto rounded-xl pt-4">
                 <button
                   onClick={handleSubmit}
-                  className="secbgcolor w-full py-3 md:py-4 text-white rounded-xl"
+                  className="secbgcolor justify-center flex items-center w-full py-3 md:py-4 text-white rounded-xl"
                 >
+                  <BiLoaderAlt className="spin animate-spin text-2xl mr-4"/>
                   Pay {eachFee.sign}{" "}
                   {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
                   {eachFee.usd}

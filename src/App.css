@@ -229,6 +229,9 @@ font-size: 13px;
   display: none;
   font-family: Gilroy-semibold;
 }
+.spin{
+  display: none;
+}
 
 @keyframes show {
   0%{ opacity: 0.4;}
