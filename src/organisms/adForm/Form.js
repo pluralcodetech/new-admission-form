@@ -53,10 +53,10 @@ const Form = () => {
   const handleCheck = () => {
     setChecked(!checked);
   };
-  const [checkedpart, setCheckedpart] = useState(false);
-  const handleCheckpart = () => {
-    setCheckedpart(!checkedpart);
-  };
+  // const [checkedpart, setCheckedpart] = useState(false);
+  // const handleCheckpart = () => {
+  //   setCheckedpart(!checkedpart);
+  // };
 
   const [formD, setFormD] = useState({
     full_name: "",
@@ -363,8 +363,7 @@ const Form = () => {
         formD.phone_number === "" ||
         formD.full_name === "" ||
         formD.cohort === "" ||
-        formD.course === "" ||
-        checkedpart === false
+        formD.course === "" 
         ) {
           setErrMsg("All fields must not be empty! & check all boxes");
         } else {
@@ -417,8 +416,7 @@ const Form = () => {
         formD.phone_number === "" ||
         formD.full_name === "" ||
         formD.cohort === "" ||
-        formD.course === "" ||
-        checkedpart === false
+        formD.course === "" 
         ) {
           setErrMsg("All fields must not be empty! & check all boxes");
         } else {
@@ -1000,8 +998,9 @@ const Form = () => {
                   >
                     {/* <div className="w-4 h-3 border paychk"></div> */}
                     <input type="checkbox" 
-                    checked={checkedpart}
-                    onChange={handleCheckpart}/>
+                    // checked={checkedpart}
+                    // onChange={handleCheckpart}
+                    />
                     <Text
                       className="w-full text-sm"
                       children="Kindly note that installment payment requires 70% down payment and Balance 4 weeks into the start of class."
