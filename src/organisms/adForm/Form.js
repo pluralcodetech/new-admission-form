@@ -352,10 +352,6 @@ const Form = () => {
   var options = {
     max: 987, // example input , yes negative values do work
   };
-    localStorage.setItem("formD",JSON.stringify(formD))
-    localStorage.setItem("totalA",JSON.stringify(eachFee.total))
-    localStorage.setItem("courseI",JSON.stringify(fee.id))
-    localStorage.setItem("balance",JSON.stringify(eachFee.balance))
 
     console.log(cohort)
   const handleSubmit = (e) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 // import { useEffect } from 'react';
 
@@ -26,8 +26,7 @@ const Payment = () => {
 
 
 
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+  
   const raw = JSON.stringify({
     name: name,
     email: email,
@@ -48,14 +47,12 @@ const Payment = () => {
     balance: balance
 
   });
-console.log(raw)
-//   let url;
-// if (detail.course_level === "diploma" && detail.payment_plan === "full_payment"){
 
-//      url = "https://backend.pluralcode.institute/enrol";
-// }else if (detail.course_level === "diploma" && detail.payment_plan === "part_payment"){
-//     url = "https://backend.pluralcode.institute/enrol"
-// }
+
+useEffect(()=>{
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
 const url = "https://backend.pluralcode.institute/enrol"
   const reqMethod = {
@@ -76,7 +73,8 @@ const url = "https://backend.pluralcode.institute/enrol"
         }
     })
     .catch((err) => console.log(err));
-
+  },[raw])
+  
   return (
     <div>
       <h1 className="text-3xl text-center py-4">{msg}</h1>
