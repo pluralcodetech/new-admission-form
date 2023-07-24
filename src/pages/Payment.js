@@ -2,50 +2,55 @@ import React from "react";
 import { useState } from "react";
 // import { useEffect } from 'react';
 
-const Payment = () => {
+const Payment = ({
+  name,
+  email,
+  phone_number,
+  course_of_interest,
+  modeL,
+  country,
+  state,
+  currency,
+  cohort_id,
+  total,
+  program_type,
+  academy_level,
+  age,
+  payment_plan,
+  bal,tot,
+  courseid,
+  detail
+}) => {
   const params = new URLSearchParams(window.location.search);
   const tx_ref = params.get("tx_ref");
-  const name = params.get("name");
-  const email = params.get("email");
-  const phone_number = params.get("phone_number");
-  const mode = params.get("mode");
-  const course = params.get("course");
-  const country = params.get("country");
-  const state = params.get("state");
-  const currency = params.get("currency");
-  const cohort_id = params.get("cohort_id");
-  const course_id = params.get("courseid");
-  const program = params.get("program");
-  const academy = params.get("academy");
-  const balance = params.get("balance");
-  const total = params.get("total");
-  const age = params.get("age");
-  const pay = params.get("pay");
-
+  // const transaction_id= params.get("transaction_id")
+console.log(tx_ref)
   const [msg, setMsg] = useState();
-
-
 
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
+  // const detail = JSON.parse(localStorage.getItem("formD"));
+  // const tot = JSON.parse(localStorage.getItem("totalA"));
+  // const courseid = JSON.parse(localStorage.getItem("courseI"));
+  // const bal = localStorage.getItem("balance");
   const raw = JSON.stringify({
-    name: name,
-    email: email,
-    phone_number: phone_number,
-    course_of_interest: course,
-    mode_of_learning: mode,
-    country: country,
-    state: state,
-    currency: currency,
-    cohort_id: cohort_id,
-    amount_paid: total,
-    program_type: program,
+    name: detail.full_name,
+    email: detail.email,
+    phone_number: detail.phone_number,
+    course_of_interest: detail.course,
+    mode_of_learning: detail.classF,
+    country: detail.country,
+    state: detail.state === "" ? "null" : detail.state,
+    currency: detail.currency.toUpperCase(),
+    cohort_id: detail.cohort,
+    amount_paid: tot,
+    program_type: detail.course_level,
     flutterwave_reference_id: tx_ref,
-    academy_level: academy,
-    age: age,
-    payment_plan: pay,
-    course_id: course_id,
-    balance: balance
+    academy_level: detail.academy_level,
+    age: detail.age_range,
+    payment_plan: detail.payment_plan,
+    course_id: courseid,
+    balance:bal === undefined ? "null" : bal
 
   });
 console.log(raw)
