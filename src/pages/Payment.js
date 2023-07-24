@@ -29,6 +29,7 @@ console.log(detail)
 console.log(courseid)
 console.log(bal)
 console.log(tot)
+localStorage.setItem("dd",detail)
   const [msg, setMsg] = useState();
 
   const myHeaders = new Headers();
