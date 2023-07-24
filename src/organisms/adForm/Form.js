@@ -5,9 +5,7 @@ import Text from "../../atom/Text";
 import Images from "../../atom/Images";
 import chkgreen from "../../images/Group.png";
 import FormNav from "../../molecules/FormNav";
-import Payment from "../../pages/Payment";
-import HeaderAd from "./HeaderAd";
-
+import HeaderAd from "./HeaderAd"
 
 const Form = () => {
   const liveD = useRef();
@@ -355,10 +353,11 @@ const Form = () => {
     max: 987, // example input , yes negative values do work
   };
     localStorage.setItem("formD",JSON.stringify(formD))
-            localStorage.setItem("totalA",JSON.stringify(eachFee.total))
-            localStorage.setItem("courseI",JSON.stringify(fee.id))
-            localStorage.setItem("balance",JSON.stringify(eachFee.balance))
+    localStorage.setItem("totalA",JSON.stringify(eachFee.total))
+    localStorage.setItem("courseI",JSON.stringify(fee.id))
+    localStorage.setItem("balance",JSON.stringify(eachFee.balance))
 
+    console.log(cohort)
   const handleSubmit = (e) => {
     e.preventDefault()
     if (checked) {
@@ -413,97 +412,6 @@ const Form = () => {
   };
   console.log(formD)
 
-  const handleSubmitsmall = (e) => {
-    e.preventDefault()
-    if (checked) {
-      // setLoading(true);
-      if (
-        eachFee.total === "" ||
-        formD.currency === "" ||
-        formD.email === "" ||
-        formD.phone_number === "" ||
-        formD.full_name === "" ||
-        formD.cohort === "" ||
-        formD.course === "" 
-        ) {
-          setErrMsg("All fields must not be empty! & check all boxes");
-        } else {
-          
-          
-        const raw = JSON.stringify({
-          "tx_ref": "plc-" + rn(options),
-          "amount": eachFee.total,
-          "currency": formD.currency.toUpperCase(),
-          "title": formD.course + " Enrollment",
-          "redirect_url": "https://bright-cuchufli-2253ee.netlify.app/payment",
-          "email": formD.email,
-          "phonenumber": formD.phone_number,
-          "name": formD.full_name,
-        });
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        const reqMethod = {
-          method: "POST",
-          headers:myHeaders,
-          body: raw,
-        };
-
-        const url = "https://backend.pluralcode.institute/initialise-payment";
-
-        fetch(url, reqMethod)
-          .then((response) => response.json())
-          .then((result) =>{ 
-              window.open(result.data.link, "_blank")
-                            
-          })
-          .catch((err) => console.log(err));
-      
-      }
-    } else {
-      setErrMsg("Box must be checked!");
-    }
-    
-  };
- useEffect(()=>{
-  const detail = JSON.parse(localStorage.get("finalDetails"))
-  const tx_ref = JSON.parse(localStorage.get("tx"))
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  const raw = JSON.stringify({
-    name: detail.full_name,
-    email: detail.email,
-    phone_number: detail.phone_number,
-    course_of_interest: detail.course,
-    mode_of_learning: detail.classF,
-    country: detail.country,
-    state: detail.state === "" ? "null" : detail.state,
-    currency: detail.currency.toUpperCase(),
-    cohort_id: detail.cohort,
-    amount_paid: eachFee.total,
-    program_type: detail.course_level,
-    flutterwave_reference_id: tx_ref,
-    academy_level: detail.academy_level,
-    age: detail.age_range,
-    payment_plan: detail.payment_plan,
-    course_id: fee.id,
-    balance: eachFee.balance
-
-  });
-  const url = "https://backend.pluralcode.institute/enrol"
-  const reqMethod = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-  };
-
-  fetch(url, reqMethod)
-    .then((response) => response.json())
-    .then((result) => {
-      console.log(result);
-    })
-    .catch((err) => console.log(err));
- },[eachFee.balance,eachFee.total,fee.id])
 
 
   return (
@@ -511,7 +419,7 @@ const Form = () => {
     <FormNav subtotal={eachFee.total} amountdue= {eachFee.amountDue} vat ={eachFee.vat} transaction= {eachFee.transaction} balance ={eachFee.balance} total={eachFee.total} name={fee?.name} sign={eachFee.sign} usd ={eachFee.usd} form={formD} />
     
     <HeaderAd/>
-    <div className="hidden"><Payment detail={formD} /></div>
+    
     <div className="w-full bg-white p-4 md:p-6 lg:px-16 lg:py-14">
       {/* certificate details */}
       <div className="w-full  cert-body pt-8 lg:pt-16 flex flex-col lg:flex-row lg:gap-2">
@@ -1128,7 +1036,7 @@ const Form = () => {
               }
               <div className="block lg:hidden w-full md:w-96 m-auto rounded-xl py-4">
                 <button
-                  onClick={handleSubmitsmall}
+                  onClick={handleSubmit}
                   className="secbgcolor w-full py-3 md:py-4 text-white rounded-xl"
                 >
                   Pay {eachFee.sign}{" "}
