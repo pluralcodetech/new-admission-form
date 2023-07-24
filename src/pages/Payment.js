@@ -26,9 +26,8 @@ const Payment = ({
   // const transaction_id= params.get("transaction_id")
 console.log(tx_ref)
 console.log(detail)
-console.log(courseid)
-console.log(bal)
-console.log(tot)
+ const g=localStorage.getItem("formD")
+ console.log(g)
 localStorage.setItem("dd",detail)
   const [msg, setMsg] = useState();
 
