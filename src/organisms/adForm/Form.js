@@ -380,7 +380,7 @@ const Form = () => {
           "amount": eachFee.total,
           "currency": formD.currency.toUpperCase(),
           "title": formD.course + " Enrollment",
-          "redirect_url": "https://bright-cuchufli-2253ee.netlify.app/payment",
+          "redirect_url": `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF}&course=${formD.course}&country=${formD.country}&state=${formD.state}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort}&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level}&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range}&pay=${formD.payment_plan}`,
           "email": formD.email,
           "phonenumber": formD.phone_number,
           "name": formD.full_name,
