@@ -42,6 +42,9 @@ const FormNav = ({
         <Text className="textcolor font-bold" children="Summary" />
         <div className="flex items-center pt-3 lg:hidden">
           <div className="w-full title">
+            <p className="">
+                {name}
+            </p>
             <p>
               Course Fee:{" "}
               <span className="fee">
