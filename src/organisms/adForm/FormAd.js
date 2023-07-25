@@ -367,6 +367,7 @@ const FormAd = () => {
     max: 987, // example input , yes negative values do work
   };
 
+  
     
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -384,32 +385,32 @@ const FormAd = () => {
         )  {
           setErrMsgFn("Fullname required!")
         }
-        if (formD.cohort === ""){
+       else if (formD.cohort === ""){
           setErrMsgCh("Cohort required!")
         }
-        if (formD.course === ""){
+        else if (formD.course === ""){
           setErrMsgCo("Course required!")
         }
-        if(
+        else if(
         formD.state === ""
         ){setErrMsgS("State required!")}
-        if(
+        else if(
         formD.country === ""
         ){setErrMsgCt("Country required!")}
-        if(
+        else if(
         formD.phone_number === ""
         ){setErrMsgPn("Phone number required!")}
-        if(
+        else if(
         formD.email === ""
         ){setErrMsgE("Email required!")}
-        if(
+        else if(
         formD.academy_level === ""
         ){setErrMsgAl("Academy level required!")}
-        if(
+        else if(
         formD.age_range === ""
         ){setErrMsgAr("Age range required!")}
 
-        sp.style.display = "block"
+       else{ sp.style.display = "block"
           
         const raw = JSON.stringify({
           "tx_ref": "plc-" + rn(options),
@@ -440,7 +441,7 @@ const FormAd = () => {
               sp.style.display = "none"
           })
           .catch((err) => console.log(err));
-      
+        }
           
         } else {
           
