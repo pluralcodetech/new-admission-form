@@ -42,7 +42,7 @@ const FormNav = ({
         <Text className="textcolor font-bold" children="Summary" />
         <div className="flex items-center pt-3 lg:hidden">
           <div className="w-full title">
-            <p className="">
+            <p className=" font-semibold">
                 {name}
             </p>
             <p>

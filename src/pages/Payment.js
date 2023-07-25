@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-// import { useEffect } from 'react';
+import Swal from 'sweetalert2'
 
 const Payment = () => {
   const params = new URLSearchParams(window.location.search);
@@ -66,9 +66,18 @@ const url = "https://backend.pluralcode.institute/enrol"
     .then((result) => {
       console.log(result);
       if (result.code === 200){
-
+        Swal.fire({
+          title: result.message,
+          icon: 'success',
+          showConfirmButton: false,
+        })
           setMsg(result.message);
         }else{
+          Swal.fire({
+            title: result.message,
+            icon: 'error',
+            showConfirmButton: false,
+          })
             setMsg("Unsuccessful!")
         }
     })
