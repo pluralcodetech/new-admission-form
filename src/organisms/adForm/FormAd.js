@@ -163,6 +163,7 @@ const FormAd = () => {
     if (name === "state" && value === "Lagos State") {
       physicalref.current.style.display = "block";
     } else if (name === "state" && value !== "Lagos State") {
+formD.classF = "virtual_class"
       physicalref.current.style.display = "none";
     }
     // for currency
