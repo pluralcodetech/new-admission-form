@@ -437,7 +437,7 @@ const FormAd = () => {
           .then((response) => response.json())
           .then((result) =>{ 
             console.log(result)      
-              window.open(result.data.link, "_blank")               
+              window.location.href =result.data.link              
               sp.style.display = "none"
           })
           .catch((err) => console.log(err));
