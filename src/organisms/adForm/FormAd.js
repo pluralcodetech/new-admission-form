@@ -372,7 +372,8 @@ const FormAd = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const sp = document.querySelector(".spin");
+    const sp = document.querySelector("#spinn");
+    const sp2 = document.querySelector("#spinn2");
     if (checked) {
       //for part payment
       if (formD.payment_plan === "part_payment" && checkedpart !== true) {
@@ -380,13 +381,13 @@ const FormAd = () => {
         return;
       }
 
-      if (formD.full_name === "") {
+      if (formD.full_name.trim() === "") {
         setErrMsgFn("Fullname required!");
         setErrMsg("All fields required!");
-      } else if (formD.email === "") {
+      } else if (formD.email.trim() === "") {
         setErrMsgE("Email required!");
         setErrMsg("All fields required!");
-      } else if (formD.phone_number === "") {
+      } else if (formD.phone_number.trim() === "") {
         setErrMsgPn("Phone number required!");
         setErrMsg("All fields required!");
 
@@ -416,6 +417,7 @@ const FormAd = () => {
 
       } else {
         sp.style.display = "block";
+        sp2.style.display = "block";
 
         const raw = JSON.stringify({
           tx_ref: "plc-" + rn(options),
@@ -453,9 +455,9 @@ const FormAd = () => {
         fetch(url, reqMethod)
           .then((response) => response.json())
           .then((result) => {
-            console.log(result);
             window.location.href = result.data.link;
             sp.style.display = "none";
+            sp2.style.display = "none";
           })
           .catch((err) => console.log(err));
       }
@@ -545,7 +547,7 @@ const FormAd = () => {
                     required
                     className="w-full cursor-pointer flex items-center dp border p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
-                    <option value="ccc" className="dptext">
+                    <option value="" className="dptext">
                       Select highest academy level
                     </option>
                     <option value="none" className="dptext">
@@ -587,7 +589,7 @@ const FormAd = () => {
                     required
                     className="w-full cursor-pointer flex items-center dp border p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
-                    <option value="ccc" className="dptext">
+                    <option value="" className="dptext">
                       Select your age range
                     </option>
                     <option value="18-24" className="dptext">
@@ -933,7 +935,7 @@ const FormAd = () => {
                     required
                     className="w-full cursor-pointer flex items-center dp border p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   >
-                    <option value="ccc" className="dptext">
+                    <option value="" className="dptext">
                       Select your course of interest
                     </option>
 

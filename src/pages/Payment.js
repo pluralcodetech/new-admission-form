@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const Payment = () => {
   const params = new URLSearchParams(window.location.search);
@@ -22,11 +21,6 @@ const Payment = () => {
   const age = params.get("age");
   const pay = params.get("pay");
 
-  const [msg, setMsg] = useState();
-
-
-
-  
   const raw = JSON.stringify({
     name: name,
     email: email,
@@ -44,52 +38,42 @@ const Payment = () => {
     age: age,
     payment_plan: pay,
     course_id: course_id,
-    balance: balance
-
+    balance: balance,
   });
 
+  useEffect(() => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-useEffect(()=>{
+    const url = "https://backend.pluralcode.institute/enrol";
+    const reqMethod = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
 
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-const url = "https://backend.pluralcode.institute/enrol"
-  const reqMethod = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-  };
-
-  fetch(url, reqMethod)
-    .then((response) => response.json())
-    .then((result) => {
-      console.log(result);
-      if (result.code === 200){
-        Swal.fire({
-          title: result.message,
-          icon: 'success',
-          showConfirmButton: false,
-        })
-          setMsg(result.message);
-        }else{
+    fetch(url, reqMethod)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result.code === 200) {
           Swal.fire({
             title: result.message,
-            icon: 'error',
+            icon: "success",
             showConfirmButton: false,
-          })
-            setMsg("Unsuccessful!")
+          });
+        } else {
+          Swal.fire({
+            title: result.message,
+            icon: "error",
+            showConfirmButton: false,
+          });
         }
-    })
-    .catch((err) => console.log(err));
-  },[raw])
-  
-  return (
-    <div>
-      <h1 className="text-3xl text-center py-4">{msg}</h1>
-      {/* status=successful&tx_ref=plc-986.8027782670599&transaction_id=4478959 */}
-    </div>
-  );
+      })
+      .catch((err) => console.log(err));
+  }, [raw]);
+
+  return <div></div>;
 };
 
 export default Payment;
