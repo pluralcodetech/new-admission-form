@@ -8,6 +8,7 @@ import FormNav from "../../molecules/FormNav";
 import HeaderAd from "./HeaderAd"
 import {BiLoaderAlt} from 'react-icons/bi'
 
+
 const FormAd = () => {
   const liveD = useRef();
   const entryref = useRef();
@@ -17,6 +18,7 @@ const FormAd = () => {
   const nairaref = useRef();
   const payBody = useRef();
   const partFee = useRef();
+  
 
   
 
@@ -368,6 +370,7 @@ const FormAd = () => {
     
   const handleSubmit = (e) => {
     e.preventDefault()
+    const sp =document.querySelector(".spin")
     if (checked) {
            //for part payment
       if(formD.payment_plan === "part_payment" && checkedpart !== true){
@@ -375,8 +378,7 @@ const FormAd = () => {
         return
       }
       
-      
-      const sp =document.querySelector(".spin")
+    
       if (
         formD.full_name === "" 
         )  {
@@ -406,18 +408,15 @@ const FormAd = () => {
         if(
         formD.age_range === ""
         ){setErrMsgAr("Age range required!")}
-          
-        const uri = `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF}&course=${formD.course}&country=${formD.country}&state=${formD.state}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort}&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level}&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range}&pay=${formD.payment_plan}`
-
-        const encode = encodeURI(uri)
 
         sp.style.display = "block"
+          
         const raw = JSON.stringify({
           "tx_ref": "plc-" + rn(options),
           "amount": eachFee.total,
           "currency": formD.currency.toUpperCase(),
           "title": formD.course + " Enrollment",
-          "redirect_url": encode,
+          "redirect_url": `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF}&course=${formD.course}&country=${formD.country}&state=${formD.state}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort}&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level}&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range}&pay=${formD.payment_plan}`,
           "email": formD.email,
           "phonenumber": formD.phone_number,
           "name": formD.full_name,
@@ -438,19 +437,19 @@ const FormAd = () => {
           .then((result) =>{ 
             console.log(result)      
               window.open(result.data.link, "_blank")               
+              sp.style.display = "none"
           })
           .catch((err) => console.log(err));
       
-      sp.style.display = "none"
-        
-    } else {
-      
-      setErrMsg("Box must be checked!");
-    }
+          
+        } else {
+          
+          setErrMsg("Box must be checked!");
+        }
     
   };
 
-console.log(checkedpart)
+
 
   return (
     <>
@@ -1090,7 +1089,9 @@ console.log(checkedpart)
                   onClick={handleSubmit}
                   className="secbgcolor justify-center flex items-center w-full py-3 md:py-4 text-white rounded-xl"
                 >
-                  <BiLoaderAlt className="spin animate-spin text-2xl mr-4"/>
+                    <div id="spinn" className="spin animate-spin text-2xl mr-4">
+                  <BiLoaderAlt />
+                  </div>
                   Pay {eachFee.sign}{" "}
                   {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
                   {eachFee.usd}
@@ -1207,7 +1208,10 @@ console.log(checkedpart)
                   onClick={handleSubmit}
                   className="secbgcolor justify-center flex items-center w-full py-3 md:py-4 text-white rounded-xl"
                 >
-                  <BiLoaderAlt className="spin animate-spin text-2xl mr-4"/>
+                  <div id="spinn2" className="spin animate-spin text-2xl mr-4">
+
+                  <BiLoaderAlt  />
+                  </div>
                   Pay {eachFee.sign}{" "}
                   {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
                   {eachFee.usd}

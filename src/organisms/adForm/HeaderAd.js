@@ -1,7 +1,8 @@
 import React from "react";
-import Images from "../../atom/Images";
-import adpix from "../../images/Frame 20692.png";
-import play from "../../images/Group 3.png";
+// import Images from "../../atom/Images";
+// import adpix from "../../images/Frame 20692.png";
+// import play from "../../images/Group 3.png";
+import Video from "./Video";
 
 const HeaderAd = () => {
   return (
@@ -9,7 +10,7 @@ const HeaderAd = () => {
       <div className="bgcolor m-0 px-4 pt-0 pb-4 md:px-6 md:pt-0 md:pb-6 lg:px-16 lg:py-0 ">
         
         <div className="flex flex-col-reverse lg:flex-row">
-          <div>
+          <div className="w-full">
             <div className="pt-8 lg:pt-28">
               <p className="adtext text-white">
                 Admission <span className="seccolor">Form</span>
@@ -23,9 +24,11 @@ const HeaderAd = () => {
               </p>
             </div>
           </div>
-          <div className="relative">
-            <Images src={play} className="w-16 md:w-20 play  absolute" />
-            <Images src={adpix} className="" />
+         
+          <div className="w-full">
+            {/* <Images src={play} className="w-16 md:w-20 play  absolute" />
+            <Images src={adpix} className="" /> */}
+            <Video/>
           </div>
         </div>
       </div>
