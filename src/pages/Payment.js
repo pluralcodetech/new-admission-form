@@ -3,7 +3,7 @@ import { useState } from "react";
 // import { useEffect } from 'react';
 
 const Payment = () => {
-  const params = new URLSearchParams(window.location.search);
+  const params = decodeURI(new URLSearchParams(window.location.search));
   const tx_ref = params.get("tx_ref");
   const name = params.get("name");
   const email = params.get("email");

@@ -1,5 +1,5 @@
 import React from 'react'
-import Form from '../organisms/adForm/Form'
+import Form from '../organisms/adForm/FormAd'
 
 const AdmissionForm = () => {
   return (

@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import Text from "../../atom/Text";
-// import plogo from "../../images/plc-icon.png";
-// import { Link } from "react-router-dom";
+// import { Formik, Form, Field } from "formik";
+import { Link } from "react-router-dom";
 import Images from "../../atom/Images";
 import chkgreen from "../../images/Group.png";
 import FormNav from "../../molecules/FormNav";
 import HeaderAd from "./HeaderAd"
 import {BiLoaderAlt} from 'react-icons/bi'
 
-const Form = () => {
+const FormAd = () => {
   const liveD = useRef();
   const entryref = useRef();
   const diplomaref = useRef();
@@ -31,6 +31,16 @@ const Form = () => {
   const [cohort, setCohort] = useState([]);
   const [fee, setFee] = useState([]);
   const [errMsg, setErrMsg] = useState();
+  const [errMsgFn, setErrMsgFn] = useState();
+  const [errMsgCh, setErrMsgCh] = useState();
+  const [errMsgCo, setErrMsgCo] = useState();
+  const [errMsgE, setErrMsgE] = useState();
+  const [errMsgAl, setErrMsgAl] = useState();
+  const [errMsgPn, setErrMsgPn] = useState();
+  const [errMsgAr, setErrMsgAr] = useState();
+  const [errMsgS, setErrMsgS] = useState();
+  const [errMsgCt, setErrMsgCt] = useState();
+  const [errMsgPp, setErrMsgPp] = useState();
   
 
   const [eachFee, setEachFee] = useState({
@@ -51,6 +61,10 @@ const Form = () => {
   const [checked, setChecked] = useState(false);
   const handleCheck = () => {
     setChecked(!checked);
+  };
+  const [checkedpart, setCheckedpart] = useState(false);
+  const handleCheckpart = () => {
+    setCheckedpart(!checkedpart);
   };
  
 
@@ -126,7 +140,9 @@ const Form = () => {
     );
   })
   const handleForm = (event) => {
-    setErrMsg("")
+    setErrMsg(""); setErrMsgAl(""); setErrMsgAr("");setErrMsgCh("");
+    setErrMsgCo(""); setErrMsgCt(""); setErrMsgE("");setErrMsgFn("");
+    setErrMsgPn(""); setErrMsgS(""); 
     const { name, value } = event.target;
     // dropdown for course level
     if (value === "entry") {
@@ -176,6 +192,7 @@ const Form = () => {
   // for fee
   useEffect(() => {
     function gg() {
+         
       //sort states of each country
       if(formD.country){
         country.map(coun=>coun).filter(each=>each.name===formD.country && setState(each.states))
@@ -352,31 +369,55 @@ const Form = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (checked) {
-      // setLoading(true);
+           //for part payment
+      if(formD.payment_plan === "part_payment" && checkedpart !== true){
+        setErrMsgPp("box must be checked!")
+        return
+      }
+      
+      
       const sp =document.querySelector(".spin")
       if (
-        eachFee.total === "" ||
-        formD.currency === "" ||
-        formD.email === "" ||
-        formD.phone_number === "" ||
-        formD.full_name === "" ||
-        formD.cohort === "" ||
-        formD.course === "" ||
-        formD.state === "" ||
-        formD.country === "" ||
-        formD.academy_level === ""||
+        formD.full_name === "" 
+        )  {
+          setErrMsgFn("Fullname required!")
+        }
+        if (formD.cohort === ""){
+          setErrMsgCh("Cohort required!")
+        }
+        if (formD.course === ""){
+          setErrMsgCo("Course required!")
+        }
+        if(
+        formD.state === ""
+        ){setErrMsgS("State required!")}
+        if(
+        formD.country === ""
+        ){setErrMsgCt("Country required!")}
+        if(
+        formD.phone_number === ""
+        ){setErrMsgPn("Phone number required!")}
+        if(
+        formD.email === ""
+        ){setErrMsgE("Email required!")}
+        if(
+        formD.academy_level === ""
+        ){setErrMsgAl("Academy level required!")}
+        if(
         formD.age_range === ""
-        ) {
-          setErrMsg("All fields must not be empty! & check all boxes");
-        } else {
+        ){setErrMsgAr("Age range required!")}
           
-          sp.style.display = "block"
+        const uri = `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF}&course=${formD.course}&country=${formD.country}&state=${formD.state}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort}&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level}&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range}&pay=${formD.payment_plan}`
+
+        const encode = encodeURI(uri)
+
+        sp.style.display = "block"
         const raw = JSON.stringify({
           "tx_ref": "plc-" + rn(options),
           "amount": eachFee.total,
           "currency": formD.currency.toUpperCase(),
           "title": formD.course + " Enrollment",
-          "redirect_url": `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF}&course=${formD.course}&country=${formD.country}&state=${formD.state}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort}&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level}&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range}&pay=${formD.payment_plan}`,
+          "redirect_url": encode,
           "email": formD.email,
           "phonenumber": formD.phone_number,
           "name": formD.full_name,
@@ -399,16 +440,17 @@ const Form = () => {
               window.open(result.data.link, "_blank")               
           })
           .catch((err) => console.log(err));
-      }
-      sp.style.display = "none"
       
+      sp.style.display = "none"
+        
     } else {
+      
       setErrMsg("Box must be checked!");
     }
     
   };
 
-
+console.log(checkedpart)
 
   return (
     <>
@@ -438,6 +480,7 @@ const Form = () => {
                   required
                   className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 />
+                <p className="text-red-600">{errMsgFn}</p>
               </div>
               <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Email *</label>
@@ -450,6 +493,7 @@ const Form = () => {
                   required
                   className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 />
+                <p className="text-red-600">{errMsgE}</p>
               </div>
               <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Phone Number</label>
@@ -462,6 +506,7 @@ const Form = () => {
                   required
                   className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                 />
+                <p className="text-red-600">{errMsgPn}</p>
               </div>
               <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Highest Academy Level</label>
@@ -503,6 +548,7 @@ const Form = () => {
                     Post Graduate
                   </option>
                 </select>
+                <p className="text-red-600">{errMsgAl}</p>
               </div>
               <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Age Range</label>
@@ -532,6 +578,7 @@ const Form = () => {
                     50+
                   </option>
                 </select>
+                <p className="text-red-600">{errMsgAr}</p>
               </div>
               <div className="w-full flex flex-row gap-4 lg:gap-6">
                 <div className="w-full ad-input flex flex-col py-2 lg:py-3">
@@ -554,6 +601,7 @@ const Form = () => {
                       return null
                     })}
                   </select>
+                <p className="text-red-600">{errMsgCt}</p>
                 </div>
                 <div className="w-full ad-input flex flex-col py-2 lg:py-3">
                   <label className="textdark pb-2">State</label>
@@ -574,6 +622,7 @@ const Form = () => {
                         
                     })}
                   </select>
+                <p className="text-red-600">{errMsgS}</p>
                 </div>
               </div>
 
@@ -845,6 +894,7 @@ const Form = () => {
                     ? certC
                     : dipC}
                 </select>
+                <p className="text-red-600">{errMsgCo}</p>
               </div>
               <div className="ad-input flex flex-col py-2 lg:py-3">
                 <label className="textdark pb-2">Cohort (Start Month)</label>
@@ -868,6 +918,7 @@ const Form = () => {
                     );
                   })}
                 </select>
+                <p className="text-red-600">{errMsgCh}</p>
               </div>
 
               <div className="live-details" ref={liveD}>
@@ -942,16 +993,23 @@ const Form = () => {
                     ref={partpay}
                     style={{ color: "#ff0000" }}
                   >
-                    {/* <div className="w-4 h-3 border paychk"></div> */}
+                    
                     <input type="checkbox" 
-                    // checked={checkedpart}
-                    // onChange={handleCheckpart}
+                    checked={checkedpart}
+                    onChange={handleCheckpart}
                     />
                     <Text
                       className="w-full text-sm"
                       children="Kindly note that installment payment requires 70% down payment and Balance 4 weeks into the start of class."
                     />
+                   
                   </div>
+                  <p
+                  className="text-red-700"
+                  
+                >
+                  {errMsgPp}
+                </p>
                 </div>
               </div>
               <div className="ad-input flex flex-col py-0 lg:py-3">
@@ -1016,7 +1074,7 @@ const Form = () => {
                 <label className="text-xs lg:text-base w-full">
                   By checking this box, you have read and agreed with
                   Pluralcode's
-                  <span className="seccolor"> student policy</span>.
+                  <span className="seccolor"><Link to="https://pluralcode.academy/payment/terms.html"> student policy</Link></span>.
                 </label>
               </div>
               {
@@ -1166,4 +1224,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default FormAd;
