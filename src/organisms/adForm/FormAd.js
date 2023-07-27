@@ -525,7 +525,6 @@ const FormAd = () => {
   return (
     <>
       <FormNav
-        subtotal={eachFee.total}
         amountdue={eachFee.amountDue}
         vat={eachFee.vat}
         transaction={eachFee.transaction}
@@ -1318,15 +1317,15 @@ const FormAd = () => {
                 <div className="w-full md:w-96 m-auto rounded-xl pt-4">
                   <button
                     onClick={handleSubmit}
-                    className="secbgcolor justify-center flex items-center w-full py-3 md:py-4 text-white rounded-xl"
+                    className="secbgcolor justify-center flex gap-1 items-center w-full py-3 md:py-4 text-white rounded-xl"
                   >
                     <div
                       id="spinn2"
-                      className="spin animate-spin text-2xl mr-4"
+                      className="spin animate-spin text-2xl mr-3"
                     >
                       <BiLoaderAlt />
                     </div>
-                    Pay {eachFee.sign}{" "}
+                    Pay {" "}{eachFee.sign}{" "}
                     {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
                     {eachFee.usd}
                   </button>
