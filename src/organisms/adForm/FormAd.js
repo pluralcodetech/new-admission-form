@@ -240,6 +240,7 @@ const FormAd = () => {
               fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 ?.onsite_course_total_fee_ngn,
             sign: <span>&#8358;</span>,
+            usd:""
           };
         });
       } else if (
@@ -266,6 +267,7 @@ const FormAd = () => {
             fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               ?.onsitebalance_ngn,
           sign: <span>&#8358;</span>,
+          usd:""
         });
       } else if (
         formD.currency === "ngn" &&
@@ -288,6 +290,7 @@ const FormAd = () => {
             fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_total_fee_ngn,
           sign: <span>&#8358;</span>,
+          usd:""
         });
       } else if (
         formD.currency === "ngn" &&
@@ -313,6 +316,7 @@ const FormAd = () => {
             fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtualbalance_ngn,
           sign: <span>&#8358;</span>,
+          usd:""
         });
       }
 
