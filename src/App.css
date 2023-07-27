@@ -80,6 +80,9 @@ body{
 .bold{
   font-family: Gilroy-bold;
 }
+.medium{
+  font-family: Gilroy-medium;
+}
 .course-btn{
   font-size: 16px;
   padding: 1rem;
@@ -308,7 +311,9 @@ animation: glow 2s ease-in-out infinite alternate;
 .play{
   width: 5%;
 }
-
+.pay-text{
+  color: #232323;
+}
 
 @media (min-width:700px) and (max-width:997px) {
   .adtext{

@@ -163,13 +163,14 @@ const FormAd = () => {
     if (name === "state" && value === "Lagos State") {
       physicalref.current.style.display = "block";
     } else if (name === "state" && value !== "Lagos State") {
-formD.classF = "virtual_class"
+      formD.classF = "virtual_class";
       physicalref.current.style.display = "none";
     }
     // for currency
     if (name === "country" && value === "Nigeria") {
       nairaref.current.style.display = "block";
     } else if (name === "country" && value !== "Nigeria") {
+      formD.currency = "usd";
       nairaref.current.style.display = "none";
     }
 
@@ -316,7 +317,11 @@ formD.classF = "virtual_class"
       }
 
       // for usd
-      if (formD.currency === "usd" && formD.payment_plan === "full_payment") {
+      if (
+        formD.currency === "usd" &&
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "full_payment"
+      ) {
         setEachFee({
           amountDue:
             fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
@@ -337,6 +342,30 @@ formD.classF = "virtual_class"
         });
       } else if (
         formD.currency === "usd" &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "full_payment"
+      ) {
+        setEachFee({
+          amountDue:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_fee_usd,
+          subtotal:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_fee_usd,
+          vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+            ?.onsite_course_vat_fee_usd,
+          transaction:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_transaction_fee_usd,
+          total:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_total_fee_usd,
+          sign: <span>&#36;</span>,
+          usd: "(USD)",
+        });
+      } else if (
+        formD.currency === "usd" &&
+        formD.classF === "virtual_class" &&
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
@@ -360,6 +389,32 @@ formD.classF = "virtual_class"
           sign: <span>&#36;</span>,
           usd: "(USD)",
         });
+      } else if (
+        formD.currency === "usd" &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "part_payment"
+      ) {
+        setEachFee({
+          subtotal:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_fee,
+          amountDue:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_fee_usd_due_amount,
+          vat: fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+            ?.onnsite_part_payment_course_vat_fee_usd,
+          transaction:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_transaction_fee_usd,
+          total:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_total_fee_usd,
+          balance:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsitebalance_usd,
+          sign: <span>&#36;</span>,
+          usd: "(USD)",
+        });
       }
     }
     gg();
@@ -375,6 +430,9 @@ formD.classF = "virtual_class"
     e.preventDefault();
     const sp = document.querySelector("#spinn");
     const sp2 = document.querySelector("#spinn2");
+    let emailRegex = new RegExp(/\S+@\S+\.\S+/);
+    let emailResult = emailRegex.test(formD.email.trim());
+
     if (checked) {
       //for part payment
       if (formD.payment_plan === "part_payment" && checkedpart !== true) {
@@ -385,37 +443,30 @@ formD.classF = "virtual_class"
       if (formD.full_name.trim() === "") {
         setErrMsgFn("Fullname required!");
         setErrMsg("All fields required!");
-      } else if (formD.email.trim() === "") {
-        setErrMsgE("Email required!");
+      } else if (!emailResult) {
+        setErrMsgE("Valid Email required!");
         setErrMsg("All fields required!");
       } else if (formD.phone_number.trim() === "") {
         setErrMsgPn("Phone number required!");
         setErrMsg("All fields required!");
-
       } else if (formD.academy_level === "") {
         setErrMsgAl("Academy level required!");
         setErrMsg("All fields required!");
-
       } else if (formD.age_range === "") {
         setErrMsgAr("Age range required!");
         setErrMsg("All fields required!");
-
       } else if (formD.country === "") {
         setErrMsgCt("Country required!");
         setErrMsg("All fields required!");
-
-      }else if (formD.state === "") {
+      } else if (formD.state === "") {
         setErrMsgS("State required!");
         setErrMsg("All fields required!");
-
-      }  else if (formD.course === "") {
+      } else if (formD.course === "") {
         setErrMsgCo("Course required!");
         setErrMsg("All fields required!");
-
       } else if (formD.cohort === "") {
         setErrMsgCh("Cohort required!");
         setErrMsg("All fields required!");
-
       } else {
         sp.style.display = "block";
         sp2.style.display = "block";

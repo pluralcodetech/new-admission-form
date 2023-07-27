@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const Payment = () => {
+  const [msg, setMsg] = useState(false);
+  const [contact, setContact] = useState("");
   const params = new URLSearchParams(window.location.search);
   const tx_ref = params.get("tx_ref");
   const name = params.get("name");
@@ -55,13 +58,9 @@ const Payment = () => {
     fetch(url, reqMethod)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
         if (result.code === 200) {
-          Swal.fire({
-            title: result.message,
-            icon: "success",
-            showConfirmButton: false,
-          });
+          setContact(result.advisor_contact_detail);
+          setMsg(true);
         } else {
           Swal.fire({
             title: result.message,
@@ -73,7 +72,41 @@ const Payment = () => {
       .catch((err) => console.log(err));
   }, [raw]);
 
-  return <div></div>;
+  return (
+    <div>
+      {msg && (
+        <div className="lg:w-2/4 m-auto px-4 h-screen flex flex-col justify-center pay-text">
+          <p className="text-2xl lg:text-3xl text-center bold pt-8 pb-4">
+            Enrollment Successful
+          </p>
+          <p className="medium pt-4">
+            Thank you for kicking off your tech journey with Pluralcode. Kindly
+            check your email inbox for your welcome pack including LMS access,
+            payment receipts, welcome letter and onboarding instructions. Be
+            sure to also check your spam/junk folders so you don't miss
+            anything.
+          </p>
+          <p className="medium pt-4">
+            If you need any further help with your onboarding, kindly send an
+            email to{" "}
+            <Link
+              className="font-semibold"
+              to="mailto:admissions@pluralcode.academy"
+            >
+              admissions@pluralcode.academy
+            </Link>{" "}
+            or click the button below to contact your student advisor via
+            WhatsApp.
+          </p>
+          <Link to={`https://wa.me/${contact}`}>
+            <button className="w-72 flex justify-center m-auto mt-8 secbgcolor text-white p-3 rounded-lg">
+              Chat our Student Advisor
+            </button>
+          </Link>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Payment;
