@@ -27,6 +27,7 @@ const FormAd = () => {
   const [country, setCountry] = useState([]);
   const [state, setState] = useState([]);
   const [cohort, setCohort] = useState([]);
+  const [chname, setchname] = useState([]);
   const [fee, setFee] = useState([]);
   const [errMsg, setErrMsg] = useState();
   const [errMsgFn, setErrMsgFn] = useState();
@@ -460,7 +461,9 @@ const FormAd = () => {
         date: ""
       })
     }
-  }, [eachFee.amountDue, eachFee.offset, eachFee.discount_deadline])
+    const cohname = cohort.map(e=>e).filter(e=>e.id=== parseInt(formD.cohort))
+    setchname(cohname)
+  }, [eachFee.amountDue, eachFee.offset, eachFee.discount_deadline,cohort,formD.cohort])
 
   //submit the form
   var rn = require("random-number");
@@ -1266,10 +1269,10 @@ const FormAd = () => {
                     />
                     <p className="lg:text-lg">
                       Cohort |{" "}
-                      <span className="reg lg:text-lg">March 2023</span>
+                      <span className="reg lg:text-lg">{chname.length>0 && chname[0].name}</span>
                     </p>
                   </div>
-                  <p className="w-3/5 text-right boldIt lg:text-xl textdark">
+                  <div className="w-3/5 text-right boldIt lg:text-xl textdark">
                     {oldPrice.price && <p className="striketh text-lg">{eachFee.sign} {numFor.format(
                       isNaN(oldPrice.price) ? 0 : oldPrice.price
                     )} {eachFee.usd}</p>}
@@ -1279,7 +1282,7 @@ const FormAd = () => {
                     )}{" "}
                     {eachFee.usd}
                     {oldPrice.date && <p className="discount text-sm">Discount Ends {oldPrice.date}</p>}
-                  </p>
+                  </div>
                 </div>
                 {/* balance for part payment */}
                 <div className="part-payment-fee" ref={partFee}>
@@ -1323,14 +1326,6 @@ const FormAd = () => {
                     {numFor.format(
                       isNaN(eachFee.amountDue) ? 0 : eachFee.amountDue
                     )}{" "}
-                    {eachFee.usd}
-                  </p>
-                </div>
-                <div className="summ lg:text-xl reg flex justify-between pt-2 pb-3 my-4">
-                  <Text className="" children="VAT:" />
-                  <p className="">
-                    {eachFee.sign}{" "}
-                    {numFor.format(isNaN(eachFee.vat) ? 0 : eachFee.vat)}{" "}
                     {eachFee.usd}
                   </p>
                 </div>

@@ -72,11 +72,7 @@ const FormNav = ({
                 {sign} {numFor.format(isNaN(amountdue) ? 0 : amountdue)} {usd}
               </span>
             </p>
-            <p>
-              VAT: <span className="fee">
-              {sign} {numFor.format(isNaN(vat) ? 0 : vat)} {usd}
-              </span>
-            </p>
+            
             <p>
               Transaction Fee:{" "}
               <span className="fee">
@@ -88,13 +84,13 @@ const FormNav = ({
           <div className="w-3/4">
             <div className="smalltot text-lg border-l-2 ">
               <Text className="ps-8" children="Total:" />
-              <p className="ps-8">
+              <div className="ps-8">
               {offset && <p className="striketh text-sm">{sign} {numFor.format(
                       isNaN(offset) ? 0 : offset
                     )} {usd}</p>}
                 {sign} {numFor.format(isNaN(total) ? 0 : total)} {usd}
                 {deadline && <p className="discount text-sm">Discount Ends {deadline}</p>}
-              </p>
+              </div>
             </div>
           </div>
         </div>
