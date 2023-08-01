@@ -314,6 +314,14 @@ animation: glow 2s ease-in-out infinite alternate;
 .pay-text{
   color: #232323;
 }
+.striketh{
+  text-decoration: line-through;
+  color: #FF1100;
+  font-family: Gilroy-regular;
+}
+.discount{
+  color: #1F531F;
+}
 
 @media (min-width:700px) and (max-width:997px) {
   .adtext{

@@ -39,8 +39,14 @@ const FormAd = () => {
   const [errMsgS, setErrMsgS] = useState();
   const [errMsgCt, setErrMsgCt] = useState();
   const [errMsgPp, setErrMsgPp] = useState();
+  const [oldPrice, setOldPrice] = useState({
+    price: "",
+    date: ""
+  });
 
   const [eachFee, setEachFee] = useState({
+    offset: "",
+    discount_deadline: "",
     subtotal: "",
     vat: "",
     transaction: "",
@@ -225,6 +231,8 @@ const FormAd = () => {
         setEachFee((prev) => {
           return {
             ...prev,
+            offset: fee.offset_ngn,
+            discount_deadline: fee.discount_deadline,
             amountDue:
               fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 .onsite_course_fee_ngn,
@@ -240,7 +248,7 @@ const FormAd = () => {
               fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 ?.onsite_course_total_fee_ngn,
             sign: <span>&#8358;</span>,
-            usd:""
+            usd: ""
           };
         });
       } else if (
@@ -249,6 +257,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          offset: fee.offset_ngn,
+          discount_deadline: fee.discount_deadline,
           subtotal:
             fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               ?.onsite_part_payment_course_fee,
@@ -267,7 +277,7 @@ const FormAd = () => {
             fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
               ?.onsitebalance_ngn,
           sign: <span>&#8358;</span>,
-          usd:""
+          usd: ""
         });
       } else if (
         formD.currency === "ngn" &&
@@ -275,6 +285,8 @@ const FormAd = () => {
         formD.payment_plan === "full_payment"
       ) {
         setEachFee({
+          offset: fee.offset_ngn,
+          discount_deadline: fee.discount_deadline,
           amountDue:
             fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_fee_ngn,
@@ -290,7 +302,7 @@ const FormAd = () => {
             fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_total_fee_ngn,
           sign: <span>&#8358;</span>,
-          usd:""
+          usd: ""
         });
       } else if (
         formD.currency === "ngn" &&
@@ -298,6 +310,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          offset: fee.offset_ngn,
+          discount_deadline: fee.discount_deadline,
           subtotal:
             fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtual_part_payment_course_fee,
@@ -316,7 +330,7 @@ const FormAd = () => {
             fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
               ?.virtualbalance_ngn,
           sign: <span>&#8358;</span>,
-          usd:""
+          usd: ""
         });
       }
 
@@ -327,6 +341,8 @@ const FormAd = () => {
         formD.payment_plan === "full_payment"
       ) {
         setEachFee({
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
           amountDue:
             fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
               ?.virtual_course_fee_usd,
@@ -350,6 +366,8 @@ const FormAd = () => {
         formD.payment_plan === "full_payment"
       ) {
         setEachFee({
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
           amountDue:
             fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
               ?.onsite_course_fee_usd,
@@ -373,6 +391,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
           subtotal:
             fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
               ?.virtual_part_payment_course_fee,
@@ -399,6 +419,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
           subtotal:
             fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
               ?.onsite_part_payment_course_fee,
@@ -423,6 +445,22 @@ const FormAd = () => {
     }
     gg();
   }, [formD, fee, country, certCourse, diplomaCourse]);
+
+  useEffect(() => {
+
+    if (eachFee.offset > 0) {
+      const oldPrice = eachFee.offset + eachFee.amountDue
+      setOldPrice({
+        price: oldPrice,
+        date: eachFee.discount_deadline
+      })
+    } else {
+      setOldPrice({
+        price: "",
+        date: ""
+      })
+    }
+  }, [eachFee.amountDue, eachFee.offset, eachFee.discount_deadline])
 
   //submit the form
   var rn = require("random-number");
@@ -480,19 +518,13 @@ const FormAd = () => {
           amount: eachFee.total,
           currency: formD.currency.toUpperCase(),
           title: formD.course + " Enrollment",
-          redirect_url: `https://bright-cuchufli-2253ee.netlify.app/payment?name=${
-            formD.full_name
-          }&email=${formD.email}&phone_number=${formD.phone_number}&mode=${
-            formD.classF
-          }&course=${formD.course}&country=${formD.country}&state=${
-            formD.state
-          }&currency=${formD.currency.toUpperCase()}&cohort_id=${
-            formD.cohort
-          }&courseid=${fee.id}&program=${formD.course_level}&academy=${
-            formD.academy_level
-          }&balance=${eachFee.balance}&total=${eachFee.total}&age=${
-            formD.age_range
-          }&pay=${formD.payment_plan}`,
+          redirect_url: `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name
+            }&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF
+            }&course=${formD.course}&country=${formD.country}&state=${formD.state
+            }&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort
+            }&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level
+            }&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range
+            }&pay=${formD.payment_plan}`,
           email: formD.email,
           phonenumber: formD.phone_number,
           name: formD.full_name,
@@ -525,6 +557,8 @@ const FormAd = () => {
   return (
     <>
       <FormNav
+      offset={oldPrice.price}
+      deadline={oldPrice.date}
         amountdue={eachFee.amountDue}
         vat={eachFee.vat}
         transaction={eachFee.transaction}
@@ -1235,12 +1269,16 @@ const FormAd = () => {
                       <span className="reg lg:text-lg">March 2023</span>
                     </p>
                   </div>
-                  <p className="w-2/4 text-right boldIt lg:text-xl textdark">
+                  <p className="w-3/5 text-right boldIt lg:text-xl textdark">
+                    {oldPrice.price && <p className="striketh text-lg">{eachFee.sign} {numFor.format(
+                      isNaN(oldPrice.price) ? 0 : oldPrice.price
+                    )} {eachFee.usd}</p>}
                     {eachFee.sign}{" "}
                     {numFor.format(
                       isNaN(eachFee.subtotal) ? 0 : eachFee?.subtotal
                     )}{" "}
                     {eachFee.usd}
+                    {oldPrice.date && <p className="discount text-sm">Discount Ends {oldPrice.date}</p>}
                   </p>
                 </div>
                 {/* balance for part payment */}

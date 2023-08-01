@@ -15,6 +15,8 @@ const FormNav = ({
   usd,
   name,
   form,
+  offset,
+  deadline
   
 }) => {
   const mob = useRef();
@@ -87,7 +89,11 @@ const FormNav = ({
             <div className="smalltot text-lg border-l-2 ">
               <Text className="ps-8" children="Total:" />
               <p className="ps-8">
+              {offset && <p className="striketh text-sm">{sign} {numFor.format(
+                      isNaN(offset) ? 0 : offset
+                    )} {usd}</p>}
                 {sign} {numFor.format(isNaN(total) ? 0 : total)} {usd}
+                {deadline && <p className="discount text-sm">Discount Ends {deadline}</p>}
               </p>
             </div>
           </div>
