@@ -74,6 +74,7 @@ const Payment = () => {
 
   return (
     <div>
+      hh
       {msg && (
         <div className="lg:w-2/4 m-auto px-4 h-screen flex flex-col justify-center pay-text">
           <p className="text-2xl lg:text-3xl text-center bold pt-8 pb-4">

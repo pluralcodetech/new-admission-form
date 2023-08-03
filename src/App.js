@@ -7,9 +7,9 @@ import Payment from './pages/Payment';
 function App() {
   return (
     <>
-    <Routes>
-      <Route path='/' element={<AdmissionForm/>} />
-      <Route path='/payment' element={<Payment/>} />
+    <Routes basename={'/admissions'}>
+      <Route path='/admissions' element={<AdmissionForm/>} />
+      <Route path='/admissions/payment' element={<Payment/>} />
     </Routes>
     </>
   );
