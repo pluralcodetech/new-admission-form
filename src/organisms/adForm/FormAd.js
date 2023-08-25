@@ -8,6 +8,7 @@ import FormNav from "../../molecules/FormNav";
 import HeaderAd from "./HeaderAd";
 import { BiLoaderAlt } from "react-icons/bi";
 
+
 const FormAd = () => {
   const liveD = useRef();
   const entryref = useRef();
@@ -19,6 +20,10 @@ const FormAd = () => {
   const partFee = useRef();
 
   const numFor = Intl.NumberFormat("en-US");
+
+  // get referral code
+  const params = new URLSearchParams(window.location.search);
+  const referral = params.get("referral_code")
 
   const [certCourse, setCertCourse] = useState([]);
   const [diplomaCourse, setDiplomaCourse] = useState([]);
@@ -40,6 +45,7 @@ const FormAd = () => {
   const [errMsgS, setErrMsgS] = useState();
   const [errMsgCt, setErrMsgCt] = useState();
   const [errMsgPp, setErrMsgPp] = useState();
+  const [duplicate, setDuplicate] = useState();
   const [oldPrice, setOldPrice] = useState({
     price: "",
     date: ""
@@ -447,6 +453,16 @@ const FormAd = () => {
     gg();
   }, [formD, fee, country, certCourse, diplomaCourse]);
 
+  //for duplicate data
+  useEffect(()=>{
+    fetch(`https://backend.pluralcode.institute/check-enrol?email=${formD.email}&course=${formD.course}`)
+    .then(response=>response.json())
+    .then(result=>{
+    setDuplicate(result.message)})
+    .catch(err=>console.log(err))
+  },[formD.email,formD.course])
+
+  //offset i.e discount prices
   useEffect(() => {
 
     if (eachFee.offset > 0) {
@@ -512,6 +528,8 @@ const FormAd = () => {
       } else if (formD.cohort === "") {
         setErrMsgCh("Cohort required!");
         setErrMsg("All fields required!");
+      }else if(duplicate !== "No records found"){
+        setErrMsg("You are already enrolled in this course!")
       } else {
         sp.style.display = "block";
         sp2.style.display = "block";
@@ -521,13 +539,13 @@ const FormAd = () => {
           amount: eachFee.total,
           currency: formD.currency.toUpperCase(),
           title: formD.course + " Enrollment",
-          redirect_url: `https://bright-cuchufli-2253ee.netlify.app/payment?name=${formD.full_name
+          redirect_url: `https://pluralcode.academy/admissions/payment?name=${formD.full_name
             }&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF
             }&course=${formD.course}&country=${formD.country}&state=${formD.state
             }&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort
             }&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level
             }&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range
-            }&pay=${formD.payment_plan}`,
+            }&pay=${formD.payment_plan}&ref=${referral}`,
           email: formD.email,
           phonenumber: formD.phone_number,
           name: formD.full_name,
@@ -1184,6 +1202,7 @@ const FormAd = () => {
                   <label className="textdark pb-2">Referral Code</label>
                   <input
                     type="text"
+                    value={referral ? referral : ""}
                     placeholder="GSHJSJK"
                     className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                     disabled

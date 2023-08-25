@@ -23,6 +23,7 @@ const Payment = () => {
   const total = params.get("total");
   const age = params.get("age");
   const pay = params.get("pay");
+  const ref = params.get("ref");
 
   const raw = JSON.stringify({
     name: name,
@@ -42,6 +43,7 @@ const Payment = () => {
     payment_plan: pay,
     course_id: course_id,
     balance: balance,
+    referral_code:ref
   });
 
   useEffect(() => {
@@ -74,7 +76,6 @@ const Payment = () => {
 
   return (
     <div>
-      hh
       {msg && (
         <div className="lg:w-2/4 m-auto px-4 h-screen flex flex-col justify-center pay-text">
           <p className="text-2xl lg:text-3xl text-center bold pt-8 pb-4">
