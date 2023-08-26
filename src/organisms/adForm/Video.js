@@ -48,7 +48,7 @@ const Video = () => {
           <div className="video">
             <video width="100%" height="100%" id="video1" className="vid" controls>
               <source
-                src="//media.w3.org/2010/05/sintel/trailer_hd.mp4"
+                src="https://pluralcode.academy/video_asset/video.mp4"
                 type="video/mp4"
               />
               Your browser does not support HTML video.
