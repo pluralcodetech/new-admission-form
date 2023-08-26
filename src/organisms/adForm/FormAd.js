@@ -1210,14 +1210,11 @@ const FormAd = () => {
                 </div>
                 <Text
                   className="textdark ad-input pt-4"
-                  children="Refund Policy"
+                  children="Student Policy"
                 />
-                <p className="refund lg:pt-2 ">
-                  A student is ONLY entitled to a refund if for any reason,
-                  Pluralcode is unable to carry out training duties for the
-                  cohort, if a cohort is cancelled or if a student has
-                  accidentally overpaid the cost of tuition. You can read more
-                  about our student policy below.
+                <p className="refund font-black lg:pt-2 ">
+                  
+Students are advised to read Pluralcode’s Student policy in order to be fully informed about standards and policies of the institution. You can read more by clicking the link below.
                 </p>
                 <div className="flex gap-2 pt-4">
                   <input
