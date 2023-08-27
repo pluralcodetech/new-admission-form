@@ -52,6 +52,8 @@ const FormAd = () => {
   });
 
   const [eachFee, setEachFee] = useState({
+    partpaymentbalancepercentage:"",
+partpaymentpercentage:"",
     offset: "",
     discount_deadline: "",
     subtotal: "",
@@ -89,8 +91,8 @@ const FormAd = () => {
     course: "",
     payment_plan: "full_payment",
     currency: "usd",
-    country: "",
-    state: "",
+    country: "Nigeria",
+    state: "Lagos State",
   });
 
   // countries list
@@ -167,10 +169,12 @@ const FormAd = () => {
       entryref.current.style.display = "block";
       diplomaref.current.style.display = "none";
       payBody.current.style.display = "none";
+      formD.course = ""
     } else if (value === "diploma") {
       diplomaref.current.style.display = "block";
       payBody.current.style.display = "block";
       entryref.current.style.display = "none";
+      formD.course = ""
     }
     // for class format
     if (name === "state" && value === "Lagos State") {
@@ -207,6 +211,7 @@ const FormAd = () => {
       };
     });
   };
+ 
 
   // for fee
   useEffect(() => {
@@ -238,6 +243,8 @@ const FormAd = () => {
         setEachFee((prev) => {
           return {
             ...prev,
+            partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
             offset: fee.offset_ngn,
             discount_deadline: fee.discount_deadline,
             amountDue:
@@ -264,6 +271,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
           offset: fee.offset_ngn,
           discount_deadline: fee.discount_deadline,
           subtotal:
@@ -292,6 +301,8 @@ const FormAd = () => {
         formD.payment_plan === "full_payment"
       ) {
         setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
           offset: fee.offset_ngn,
           discount_deadline: fee.discount_deadline,
           amountDue:
@@ -317,6 +328,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
           offset: fee.offset_ngn,
           discount_deadline: fee.discount_deadline,
           subtotal:
@@ -348,6 +361,8 @@ const FormAd = () => {
         formD.payment_plan === "full_payment"
       ) {
         setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
           offset: fee.offset_usd,
           discount_deadline: fee.discount_deadline,
           amountDue:
@@ -373,6 +388,8 @@ const FormAd = () => {
         formD.payment_plan === "full_payment"
       ) {
         setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
           offset: fee.offset_usd,
           discount_deadline: fee.discount_deadline,
           amountDue:
@@ -398,6 +415,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
           offset: fee.offset_usd,
           discount_deadline: fee.discount_deadline,
           subtotal:
@@ -426,6 +445,8 @@ const FormAd = () => {
         formD.payment_plan === "part_payment"
       ) {
         setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
           offset: fee.offset_usd,
           discount_deadline: fee.discount_deadline,
           subtotal:
@@ -1158,10 +1179,8 @@ const FormAd = () => {
                         checked={checkedpart}
                         onChange={handleCheckpart}
                       />
-                      <Text
-                        className="w-full text-sm"
-                        children="Kindly note that installment payment requires 70% down payment and Balance 4 weeks into the start of class."
-                      />
+                        <p className="w-full text-sm">Kindly note that installment payment requires {eachFee.partpaymentpercentage}% down payment and Balance 4 weeks into the start of class.
+                      </p>
                     </div>
                     <p className="text-red-500 lg:text-lg">{errMsgPp}</p>
                   </div>
@@ -1304,10 +1323,10 @@ Students are advised to read Pluralcode’s Student policy in order to be fully 
                 <div className="part-payment-fee" ref={partFee}>
                   <div className="flex justify-between items-center pt-4 pb-8">
                     <div className="textdark">
-                      <Text
+                      <p
                         className="text-xl lg:text-2xl"
-                        children="Amount to pay (70%)"
-                      />
+                        >Amount to pay {eachFee.partpaymentpercentage}%
+                      </p>
                     </div>
                     <p className="boldIt lg:text-xl textdark">
                       {eachFee.sign}{" "}
@@ -1319,10 +1338,10 @@ Students are advised to read Pluralcode’s Student policy in order to be fully 
                   </div>
                   <div className="flex justify-between items-center pb-4">
                     <div className="textdark">
-                      <Text
-                        className="text-xl lg:text-2xl"
-                        children="Balance to pay (30%)"
-                      />
+                      <p
+                        className="text-xl lg:text-2xl">
+                        Balance to pay {eachFee.partpaymentbalancepercentage}%
+                      </p>
                     </div>
                     <p className="boldIt lg:text-xl textdark">
                       {eachFee.sign}{" "}
