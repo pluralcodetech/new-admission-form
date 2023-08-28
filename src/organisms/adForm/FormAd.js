@@ -176,20 +176,8 @@ partpaymentpercentage:"",
       entryref.current.style.display = "none";
       formD.course = ""
     }
-    // for class format
-    if (name === "state" && value === "Lagos State") {
-      physicalref.current.style.display = "block";
-    } else if (name === "state" && value !== "Lagos State") {
-      formD.classF = "virtual_class";
-      physicalref.current.style.display = "none";
-    }
-    // for currency
-    if (name === "country" && value === "Nigeria") {
-      nairaref.current.style.display = "block";
-    } else if (name === "country" && value !== "Nigeria") {
-      formD.currency = "usd";
-      nairaref.current.style.display = "none";
-    }
+    
+    
 
     //for part payment
     if (value === "part_payment") {
@@ -224,6 +212,21 @@ partpaymentpercentage:"",
             (each) => each.name === formD.country && setState(each.states)
           );
       }
+      // for currency
+      if (formD.country === "Nigeria") {
+        nairaref.current.style.display = "block";
+      } else if (formD.country !== "Nigeria") {
+        formD.currency = "usd";
+        nairaref.current.style.display = "none";
+
+      }
+      // for class format
+    if (formD.state === "Lagos State" && formD.country === "Nigeria") {
+      physicalref.current.style.display = "block";
+    } else if (formD.state !== "Lagos State") {
+      formD.classF = "virtual_class";
+      physicalref.current.style.display = "none";
+    }
 
       if (formD.course_level === "entry") {
         certCourse
