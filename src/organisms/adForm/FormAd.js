@@ -216,6 +216,7 @@ partpaymentpercentage:"",
       if (formD.country === "Nigeria") {
         nairaref.current.style.display = "block";
       } else if (formD.country !== "Nigeria") {
+        physicalref.current.style.display = "none";
         formD.currency = "usd";
         nairaref.current.style.display = "none";
 
