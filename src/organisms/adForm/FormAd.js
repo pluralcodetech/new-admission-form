@@ -34,6 +34,7 @@ const FormAd = () => {
   const [cohort, setCohort] = useState([]);
   const [chname, setchname] = useState([]);
   const [fee, setFee] = useState([]);
+  const [emailmsg, setEmailmsg] = useState("");
   const [errMsg, setErrMsg] = useState();
   const [errMsgFn, setErrMsgFn] = useState();
   const [errMsgCh, setErrMsgCh] = useState();
@@ -204,6 +205,11 @@ partpaymentpercentage:"",
   // for fee
   useEffect(() => {
     function gg() {
+      //email message
+     if(formD.email){
+      setEmailmsg("Kindly enter the email address you will use to access your student portal. If you are a returning student, kindly us your registered email address here")
+     }
+
       //sort states of each country
       if (formD.country) {
         country
@@ -658,6 +664,7 @@ partpaymentpercentage:"",
                     required
                     className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   />
+                  <p className="text-xs font-['Gilroy-semibold'] pt-2" >{emailmsg}</p>
                   <p className="text-red-600">{errMsgE}</p>
                 </div>
                 <div className="ad-input flex flex-col py-2 lg:py-3">
@@ -1235,7 +1242,7 @@ partpaymentpercentage:"",
                   className="textdark ad-input pt-4"
                   children="Student Policy"
                 />
-                <p className="refund font-black lg:pt-2 ">
+                <p className="refund font-['gextra'] lg:pt-2 ">
                   
 Students are advised to read Pluralcode’s Student policy in order to be fully informed about standards and policies of the institution. You can read more by clicking the link below.
                 </p>
