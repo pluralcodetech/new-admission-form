@@ -171,11 +171,13 @@ partpaymentpercentage:"",
       diplomaref.current.style.display = "none";
       payBody.current.style.display = "none";
       formD.course = ""
+      setFee([])
     } else if (value === "diploma") {
       diplomaref.current.style.display = "block";
       payBody.current.style.display = "block";
       entryref.current.style.display = "none";
       formD.course = ""
+      setFee([])
     }
     
     
@@ -244,6 +246,7 @@ partpaymentpercentage:"",
           .map((fee) => fee)
           .filter((each) => each.name === formD.course && setFee(each));
       }
+      
 
       if (
         formD.currency === "ngn" &&
@@ -479,11 +482,25 @@ partpaymentpercentage:"",
           sign: <span>&#36;</span>,
           usd: "(USD)",
         });
+      }else{
+        setEachFee({
+          partpaymentbalancepercentage: "",
+          offset: "",
+          discount_deadline: "",
+          subtotal:"",
+          amountDue:"",
+          transaction:"",
+          total:"",
+          balance:"",
+          sign: "",
+          usd: "",
+        })
       }
     }
     gg();
   }, [formD, fee, country, certCourse, diplomaCourse]);
 
+  
   //for duplicate data
   useEffect(()=>{
     fetch(`https://backend.pluralcode.institute/check-enrol?email=${formD.email}&course=${formD.course}`)
@@ -496,7 +513,7 @@ partpaymentpercentage:"",
   //offset i.e discount prices
   useEffect(() => {
 
-    if (eachFee.offset > 0) {
+    if (eachFee.offset > 0 && formD.payment_plan=== 'full_payment') {
       const oldPrice = eachFee.offset + eachFee.amountDue
       setOldPrice({
         price: oldPrice,
@@ -510,7 +527,7 @@ partpaymentpercentage:"",
     }
     const cohname = cohort.map(e=>e).filter(e=>e.id=== parseInt(formD.cohort))
     setchname(cohname)
-  }, [eachFee.amountDue, eachFee.offset, eachFee.discount_deadline,cohort,formD.cohort])
+  }, [eachFee.amountDue, eachFee.offset, eachFee.discount_deadline,cohort,formD.cohort, formD.payment_plan])
 
   //submit the form
   var rn = require("random-number");
@@ -620,6 +637,7 @@ partpaymentpercentage:"",
         sign={eachFee.sign}
         usd={eachFee.usd}
         form={formD}
+        subtotal={eachFee.subtotal}
       />
 
       <HeaderAd />

@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 const FormNav = ({
   amountdue,
-  vat,
+  subtotal,
   transaction,
   balance,
   total,
@@ -49,7 +49,7 @@ const FormNav = ({
             <p>
               Course Fee:{" "}
               <span className="fee">
-                {sign} {numFor.format(isNaN(amountdue) ? 0 : amountdue)} {usd}
+                {sign} {numFor.format(isNaN(subtotal) ? 0 : subtotal)} {usd}
               </span>
             </p>
            <div className="part-payment-fee" ref={part2}>
