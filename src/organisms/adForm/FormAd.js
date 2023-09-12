@@ -482,19 +482,6 @@ partpaymentpercentage:"",
           sign: <span>&#36;</span>,
           usd: "(USD)",
         });
-      }else{
-        setEachFee({
-          partpaymentbalancepercentage: "",
-          offset: "",
-          discount_deadline: "",
-          subtotal:"",
-          amountDue:"",
-          transaction:"",
-          total:"",
-          balance:"",
-          sign: "",
-          usd: "",
-        })
       }
     }
     gg();
