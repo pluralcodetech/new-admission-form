@@ -274,6 +274,7 @@ partpaymentpercentage:"",
             total:
               fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 ?.onsite_course_total_fee_ngn,
+                balance: 0,
             sign: <span>&#8358;</span>,
             usd: ""
           };
@@ -332,6 +333,7 @@ partpaymentpercentage:"",
           total:
             fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
               ?.virtual_course_total_fee_ngn,
+              balance: 0,
           sign: <span>&#8358;</span>,
           usd: ""
         });
@@ -392,6 +394,7 @@ partpaymentpercentage:"",
           total:
             fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
               ?.virtual_course_total_fee_usd,
+              balance: 0,
           sign: <span>&#36;</span>,
           usd: "(USD)",
         });
@@ -419,6 +422,7 @@ partpaymentpercentage:"",
           total:
             fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
               ?.onsite_course_total_fee_usd,
+              balance: 0,
           sign: <span>&#36;</span>,
           usd: "(USD)",
         });
@@ -486,7 +490,8 @@ partpaymentpercentage:"",
     }
     gg();
   }, [formD, fee, country, certCourse, diplomaCourse]);
-
+console.log(formD)
+console.log(fee)
   
   //for duplicate data
   useEffect(()=>{
