@@ -15,6 +15,7 @@ const FormAd = () => {
   const diplomaref = useRef();
   const partpay = useRef();
   const physicalref = useRef();
+  const virtualref = useRef();
   const nairaref = useRef();
   const payBody = useRef();
   const partFee = useRef();
@@ -186,7 +187,7 @@ partpaymentpercentage:"",
     if (value === "part_payment") {
       partpay.current.style.display = "flex";
       partFee.current.style.display = "block";
-    } else if (name === "payment_plan" && value !== "part_payment") {
+    } else if (name === "payment_plan" && value !== "part_payment" ) {
       partpay.current.style.display = "none";
       partFee.current.style.display = "none";
     } else if (value === "entry") {
@@ -486,12 +487,28 @@ partpaymentpercentage:"",
           sign: <span>&#36;</span>,
           usd: "(USD)",
         });
-      }
+      } 
     }
     gg();
   }, [formD, fee, country, certCourse, diplomaCourse]);
-console.log(formD)
-console.log(fee)
+
+
+//to check if any course has just one class format
+useEffect(()=>{
+  if (!fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn?.onsite_course_fee_ngn || !fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd?.onsite_course_fee_usd){
+    physicalref.current.style.display = "none"; 
+    virtualref.current.style.display = 'block'
+    formD.classF = 'virtual_class'
+
+  }else if(!fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn?.virtual_course_fee_ngn || !fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd?.virtual_course_fee_usd){
+    virtualref.current.style.display = "none"
+    formD.classF = 'physical_class'
+  }else{
+    formD.classF = 'virtual_class'
+    virtualref.current.style.display = 'block'
+    physicalref.current.style.display = 'block'
+  }
+},[fee,formD])
   
   //for duplicate data
   useEffect(()=>{
@@ -1125,7 +1142,7 @@ console.log(fee)
                   <div className="ad-input flex flex-col pt-2 lg:py-3">
                     <label className="textdark pb-2">Class Format</label>
                     <div className="flex gap-8">
-                      <div className="">
+                      <div className="" ref={virtualref}>
                         <label className="container text-base ten">
                           Virtual Class
                           <input
