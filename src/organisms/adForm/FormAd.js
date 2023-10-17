@@ -504,7 +504,6 @@ useEffect(()=>{
     virtualref.current.style.display = "none"
     formD.classF = 'physical_class'
   }else{
-    formD.classF = 'virtual_class'
     virtualref.current.style.display = 'block'
     physicalref.current.style.display = 'block'
   }
