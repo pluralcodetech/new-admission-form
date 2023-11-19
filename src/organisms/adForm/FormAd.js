@@ -17,6 +17,7 @@ const FormAd = () => {
   const physicalref = useRef();
   const virtualref = useRef();
   const nairaref = useRef();
+  const usdtref = useRef();
   const payBody = useRef();
   const partFee = useRef();
 
@@ -226,7 +227,7 @@ partpaymentpercentage:"",
         nairaref.current.style.display = "block";
       } else if (formD.country !== "Nigeria") {
         physicalref.current.style.display = "none";
-        formD.currency = "usd";
+        // formD.currency = "usd";
         nairaref.current.style.display = "none";
 
       }
@@ -488,6 +489,125 @@ partpaymentpercentage:"",
           usd: "(USD)",
         });
       } 
+
+       // for usdt
+       if (
+        formD.currency === "usdt" &&
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "full_payment"
+      ) {
+        setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
+          amountDue:
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+              ?.virtual_course_fee_usd,
+          subtotal:
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+              ?.virtual_course_fee_usd,
+          vat: fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+            ?.virtual_course_vat_fee_usd,
+          transaction:
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+              ?.virtual_course_transaction_fee_usd,
+          total:
+            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
+              ?.virtual_course_total_fee_usd,
+              balance: 0,
+          sign: <span>&#36;</span>,
+          usd: "(USD)",
+        });
+      } else if (
+        formD.currency === "usdt" &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "full_payment"
+      ) {
+        setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
+          amountDue:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_fee_usd,
+          subtotal:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_fee_usd,
+          vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+            ?.onsite_course_vat_fee_usd,
+          transaction:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_transaction_fee_usd,
+          total:
+            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_total_fee_usd,
+              balance: 0,
+          sign: <span>&#36;</span>,
+          usd: "(USD)",
+        });
+      } else if (
+        formD.currency === "usdt" &&
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "part_payment"
+      ) {
+        setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
+          subtotal:
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+              ?.virtual_part_payment_course_fee,
+          amountDue:
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+              ?.virtual_part_payment_course_fee_usd_due_amount,
+          vat: fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+            ?.virtual_part_payment_course_vat_fee_usd,
+          transaction:
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+              ?.virtual_part_payment_course_transaction_fee_usd,
+          total:
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+              ?.virtual_part_payment_course_total_fee_usd,
+          balance:
+            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+              ?.virtualbalance_usd,
+          sign: <span>&#36;</span>,
+          usd: "(USD)",
+        });
+      } else if (
+        formD.currency === "usdt" &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "part_payment"
+      ) {
+        setEachFee({
+          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
+            partpaymentpercentage:fee.partpaymentpercentage,
+          offset: fee.offset_usd,
+          discount_deadline: fee.discount_deadline,
+          subtotal:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_fee,
+          amountDue:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_fee_usd_due_amount,
+          vat: fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+            ?.onnsite_part_payment_course_vat_fee_usd,
+          transaction:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_transaction_fee_usd,
+          total:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsite_part_payment_course_total_fee_usd,
+          balance:
+            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
+              ?.onsitebalance_usd,
+          sign: <span>&#36;</span>,
+          usd: "(USD)",
+        });
+      } 
     }
     gg();
   }, [formD, fee, country, certCourse, diplomaCourse]);
@@ -586,7 +706,7 @@ useEffect(()=>{
         setErrMsg("All fields required!");
       }else if(duplicate !== "No records found"){
         setErrMsg("You are already enrolled in this course!")
-      } else {
+      } else if(formD.currency === 'usd' || formD.currency === 'ngn') {
         sp.style.display = "block";
         sp2.style.display = "block";
 
@@ -626,6 +746,49 @@ useEffect(()=>{
           })
           .catch((err) => console.log(err));
       }
+      //
+      else if(formD.currency === 'usdt') {
+        sp.style.display = "block";
+        sp2.style.display = "block";
+        const fullname=formD.full_name.replace(/ /g,"_")
+        const st=formD.state.replace(/ /g,"_")
+        const cour = formD.course.replace(/ /g,"_")
+        // const upperCurrency = formD.currency.toUpperCase() ///
+        const raw = JSON.stringify({
+          amount: eachFee.amountDue,
+          baseFiat: 'USD',
+          redirectLink: `pluralcode.academy/admissions/payment?name=${fullname}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF
+          }&course=${cour}&country=${formD.country}&state=${st}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort
+          }&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level
+          }&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range
+          }&pay=${formD.payment_plan}&ref=${referral}`,
+          name: formD.full_name,
+          description: formD.course
+        });
+        
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const reqMethod = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+        };
+
+        const url = "https://backend.pluralcode.institute/crypto-payment";
+
+        fetch(url, reqMethod)
+          .then((response) => response.json())
+          .then((result) => {
+            // window.open(result.paymentlink);
+            window.location.href= result.paymentlink
+            sp.style.display = "none";
+            sp2.style.display = "none";
+            
+          })
+          .catch((err) => console.log(err));
+      }
+      //
     } else {
       setErrMsg("Box must be checked!");
     }
@@ -1246,6 +1409,19 @@ useEffect(()=>{
                           name="currency"
                           value="ngn"
                           checked={formD.currency === "ngn"}
+                          onChange={handleForm}
+                        />
+                        <span className="checkmark"></span>
+                      </label>
+                    </div>
+                    <div className="" ref={usdtref}>
+                      <label className="container text-base ten">
+                        USDT/USDC (Cryptocurrencies)
+                        <input
+                          type="radio"
+                          name="currency"
+                          value="usdt"
+                          checked={formD.currency === "usdt"}
                           onChange={handleForm}
                         />
                         <span className="checkmark"></span>
