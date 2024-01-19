@@ -8,7 +8,6 @@ import FormNav from "../../molecules/FormNav";
 import HeaderAd from "./HeaderAd";
 import { BiLoaderAlt } from "react-icons/bi";
 
-
 const FormAd = () => {
   const liveD = useRef();
   const entryref = useRef();
@@ -25,10 +24,14 @@ const FormAd = () => {
 
   // get referral code
   const params = new URLSearchParams(window.location.search);
-  const referral = params.get("referral_code")
+  const referral = params.get("referral_code");
+  const getSandbox = params.get("sandbox");
 
-  const [certCourse, setCertCourse] = useState([]);
+  const [diplomaPlusCourse, setDiplomaPlusCourse] = useState([]);
+  const [sandbox, setSandbox] = useState([]);
   const [diplomaCourse, setDiplomaCourse] = useState([]);
+  const [showSandbox, setShowSandbox] = useState(false);
+  const [showDip, setShowDip] = useState(true);
 
   const [readMore, setReadMore] = useState(false);
   const [country, setCountry] = useState([]);
@@ -51,12 +54,12 @@ const FormAd = () => {
   const [duplicate, setDuplicate] = useState();
   const [oldPrice, setOldPrice] = useState({
     price: "",
-    date: ""
+    date: "",
   });
 
   const [eachFee, setEachFee] = useState({
-    partpaymentbalancepercentage:"",
-partpaymentpercentage:"",
+    partpaymentbalancepercentage: "",
+    partpaymentpercentage: "",
     offset: "",
     discount_deadline: "",
     subtotal: "",
@@ -88,7 +91,7 @@ partpaymentpercentage:"",
     phone_number: "",
     age_range: "",
     academy_level: "",
-    course_level: "diploma",
+    course_level: "diplomaplus",
     classF: "virtual_class",
     cohort: "",
     course: "",
@@ -98,12 +101,23 @@ partpaymentpercentage:"",
     state: "Lagos State",
   });
 
+  //display course level
+  useEffect(() => {
+    if (getSandbox === "1") {
+      setShowDip(false);
+      setShowSandbox(true);
+      physicalref.current.style.display = "none";
+      payBody.current.style.display = "none";
+      formD.course_level = "sandbox";
+    }
+  }, [showSandbox, getSandbox, showDip, formD]);
+
   // countries list
   useEffect(() => {
     fetch("https://countriesnow.space/api/v0.1/countries/states")
       .then((response) => response.json())
       .then((result) => {
-        setCountry(result.data);
+        setCountry(result?.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -113,24 +127,36 @@ partpaymentpercentage:"",
     fetch("https://backend.pluralcode.institute/course-list")
       .then((response) => response.json())
       .then((result) => {
-        setCertCourse(result.certcourses);
-        setDiplomaCourse(result.diplomacourses);
+        console.log(result);
+        setSandbox(result?.sandboxonly);
+        setDiplomaCourse(result?.diplomacourses);
       })
       .catch((err) => console.log(err));
   }, []);
+
+  //diploma + sandbox list
+  useEffect(() => {
+    const arr = [];
+    diplomaCourse.map((each) => {
+      if (each.sandbox_status === 1) {
+        arr.push(each);
+      }
+      return setDiplomaPlusCourse(arr);
+    });
+  }, [diplomaCourse]);
 
   // cohort list
   useEffect(() => {
     fetch("https://backend.pluralcode.institute/cohort-list")
       .then((response) => response.json())
       .then((result) => {
-        setCohort(result.data);
+        setCohort(result?.data);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  // certificate courses
-  const certC = certCourse?.map((eachC) => {
+  // diploma + sandbox courses
+  const dipplusC = diplomaPlusCourse?.map((eachC) => {
     return (
       <option
         key={eachC.id}
@@ -155,6 +181,8 @@ partpaymentpercentage:"",
       </option>
     );
   });
+  console.log(formD);
+
   const handleForm = (event) => {
     setErrMsg("");
     setErrMsgAl("");
@@ -168,31 +196,24 @@ partpaymentpercentage:"",
     setErrMsgS("");
     const { name, value } = event.target;
     // dropdown for course level
-    if (value === "entry") {
-      entryref.current.style.display = "block";
-      diplomaref.current.style.display = "none";
+    if (formD.course_level === "sandbox") {
       payBody.current.style.display = "none";
-      formD.course = ""
-      setFee([])
-    } else if (value === "diploma") {
+      physicalref.current.style.display = "none";
+      formD.course = "";
+      setFee([]);
+    } else if (value === "diploma" || value === "diplomaplus") {
       diplomaref.current.style.display = "block";
+      // physicalref.current.style.display = "block";
       payBody.current.style.display = "block";
-      entryref.current.style.display = "none";
-      formD.course = ""
-      setFee([])
+      formD.course = "";
+      setFee([]);
     }
-    
-    
 
     //for part payment
     if (value === "part_payment") {
       partpay.current.style.display = "flex";
       partFee.current.style.display = "block";
-    } else if (name === "payment_plan" && value !== "part_payment" ) {
-      partpay.current.style.display = "none";
-      partFee.current.style.display = "none";
-    } else if (value === "entry") {
-      formD.payment_plan = "full_payment";
+    } else if (name === "payment_plan" && value !== "part_payment") {
       partpay.current.style.display = "none";
       partFee.current.style.display = "none";
     }
@@ -204,15 +225,16 @@ partpaymentpercentage:"",
       };
     });
   };
- 
 
   // for fee
   useEffect(() => {
     function gg() {
       //email message
-     if(formD.email){
-      setEmailmsg("Kindly enter the email address you will use to access your student portal. If you are a returning student, kindly us your registered email address here")
-     }
+      if (formD.email) {
+        setEmailmsg(
+          "Kindly enter the email address you will use to access your student portal. If you are a returning student, kindly us your registered email address here"
+        );
+      }
 
       //sort states of each country
       if (formD.country) {
@@ -229,18 +251,20 @@ partpaymentpercentage:"",
         physicalref.current.style.display = "none";
         // formD.currency = "usd";
         nairaref.current.style.display = "none";
-
       }
       // for class format
-    if (formD.state === "Lagos State" && formD.country === "Nigeria") {
-      physicalref.current.style.display = "block";
-    } else if (formD.state !== "Lagos State") {
-      formD.classF = "virtual_class";
-      physicalref.current.style.display = "none";
-    }
+      if (formD.course_level === "sandbox") {
+        formD.classF = "virtual_class";
+        physicalref.current.style.display = "none";
+      } else if (formD.state === "Lagos State" && formD.country === "Nigeria") {
+        physicalref.current.style.display = "block";
+      } else if (formD.state !== "Lagos State") {
+        formD.classF = "virtual_class";
+        physicalref.current.style.display = "none";
+      }
 
-      if (formD.course_level === "entry") {
-        certCourse
+      if (formD.course_level === "diplomaplus") {
+        diplomaPlusCourse
           .map((fee) => fee)
           .filter((each) => each.name === formD.course && setFee(each));
       } else if (formD.course_level === "diploma") {
@@ -248,414 +272,895 @@ partpaymentpercentage:"",
           .map((fee) => fee)
           .filter((each) => each.name === formD.course && setFee(each));
       }
-      
+
+      // for ngn
 
       if (
         formD.currency === "ngn" &&
         formD.classF === "physical_class" &&
-        formD.payment_plan === "full_payment"
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
         setEachFee((prev) => {
           return {
             ...prev,
-            partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-            offset: fee.offset_ngn,
-            discount_deadline: fee.discount_deadline,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_ngn_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
             amountDue:
-              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-                .onsite_course_fee_ngn,
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_ngn
+                ?.combo_onsite_course_fee_ngn,
             subtotal:
-              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-                .onsite_course_fee_ngn,
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_ngn
+                ?.combo_onsite_course_fee_ngn,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
               ?.onsite_course_vat_fee_ngn,
             transaction:
-              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-                ?.onsite_course_transaction_fee_ngn,
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_ngn
+                ?.combo_onsite_course_transaction_fee_ngn,
             total:
-              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-                ?.onsite_course_total_fee_ngn,
-                balance: 0,
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_ngn
+                ?.combo_onsite_course_total_fee_ngn,
+            balance:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_ngn
+                ?.combo_onsitebalance_ngn,
             sign: <span>&#8358;</span>,
-            usd: ""
+            usd: "",
           };
         });
       } else if (
         formD.currency === "ngn" &&
         formD.classF === "physical_class" &&
-        formD.payment_plan === "part_payment"
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_ngn,
-          discount_deadline: fee.discount_deadline,
-          subtotal:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
-              ?.onsite_part_payment_course_fee,
-          amountDue:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
-              ?.onsite_part_payment_course_fee_ngn_due_amount,
-          vat: fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
-            .onsite_part_payment_course_vat_fee_ngn,
-          transaction:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
-              .onsite_part_payment_course_transaction_fee_ngn,
-          total:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
-              .onsite_part_payment_course_total_fee_ngn,
-          balance:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
-              ?.onsitebalance_ngn,
-          sign: <span>&#8358;</span>,
-          usd: ""
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_ngn_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_ngn
+                ?.combo_onsite_part_payment_course_fee_ngn_due_amount,
+            subtotal:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_ngn
+                ?.combo_onsite_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              ?.onsite_course_vat_fee_ngn,
+            transaction:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_ngn
+                ?.combo_onsite_part_payment_course_transaction_fee_ngn,
+            total:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_ngn
+                ?.combo_onsite_part_payment_course_total_fee_ngn,
+            balance:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_ngn
+                ?.combo_onsitebalance_ngn,
+            sign: <span>&#8358;</span>,
+            usd: "",
+          };
         });
       } else if (
         formD.currency === "ngn" &&
         formD.classF === "virtual_class" &&
-        formD.payment_plan === "full_payment"
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_ngn,
-          discount_deadline: fee.discount_deadline,
-          amountDue:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
-              ?.virtual_course_fee_ngn,
-          subtotal:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
-              ?.virtual_course_fee_ngn,
-          vat: fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
-            ?.virtual_course_vat_fee_ngn,
-          transaction:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
-              ?.virtual_course_transaction_fee_ngn,
-          total:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
-              ?.virtual_course_total_fee_ngn,
-              balance: 0,
-          sign: <span>&#8358;</span>,
-          usd: ""
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_ngn_virtual,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_ngn
+                ?.combo_virtual_course_fee_ngn,
+            subtotal:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_ngn
+                ?.combo_virtual_course_total_fee_ngn,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              ?.onsite_course_vat_fee_ngn,
+            transaction:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_ngn
+                ?.combo_virtual_course_transaction_fee_ngn,
+            total:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_ngn
+                ?.combo_virtual_course_total_fee_ngn,
+            balance:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_ngn
+                ?.combo_virtual_part_payment_course_transaction_fee_ngn,
+            sign: <span>&#8358;</span>,
+            usd: "",
+          };
         });
       } else if (
         formD.currency === "ngn" &&
         formD.classF === "virtual_class" &&
-        formD.payment_plan === "part_payment"
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_ngn,
-          discount_deadline: fee.discount_deadline,
-          subtotal:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
-              ?.virtual_part_payment_course_fee,
-          amountDue:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
-              ?.virtual_part_payment_course_fee_ngn_due_amount,
-          vat: fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
-            ?.virtual_part_payment_course_vat_fee_ngn,
-          transaction:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
-              ?.virtual_part_payment_course_transaction_fee_ngn,
-          total:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
-              ?.virtual_part_payment_course_total_fee_ngn,
-          balance:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
-              ?.virtualbalance_ngn,
-          sign: <span>&#8358;</span>,
-          usd: ""
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_ngn_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_ngn
+                ?.combo_virtual_part_payment_course_fee_ngn_due_amount,
+            subtotal:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_ngn
+                ?.combo_virtual_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              ?.onsite_course_vat_fee_ngn,
+            transaction:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_ngn
+                ?.combo_virtual_part_payment_course_transaction_fee_ngn,
+            total:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_ngn
+                ?.combo_virtual_part_payment_course_total_fee_ngn,
+            balance:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_ngn
+                ?.combo_virtualbalance_ngn,
+            sign: <span>&#8358;</span>,
+            usd: "",
+          };
+        });
+      }
+//  for ngn diploma
+      if (
+        formD.currency === "ngn" &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diploma"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_ngn_onsite,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_onsite_fees
+                ?.onsite_course_full_payment_fees_ngn
+                ?.onsite_course_fee_ngn,
+            subtotal:
+            fee?.course_onsite_fees
+            ?.onsite_course_full_payment_fees_ngn
+            ?.onsite_course_fee_ngn,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              ?.onsite_course_vat_fee_ngn,
+            transaction:
+            fee?.course_onsite_fees
+            ?.onsite_course_full_payment_fees_ngn
+            ?.onsite_course_transaction_fee_ngn,
+            total:
+              fee?.course_onsite_fees
+                ?.onsite_course_full_payment_fees_ngn
+                ?.onsite_course_total_fee_ngn,
+            balance:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_ngn
+                ?.onsitebalance_ngn,
+            sign: <span>&#8358;</span>,
+            usd: "",
+          };
+        });
+      } else if (
+        formD.currency === "ngn" &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diploma"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_ngn_onsite,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_ngn
+                ?.onsite_part_payment_course_fee_ngn_due_amount,
+            subtotal:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_ngn
+                ?.onsite_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              ?.onsite_course_vat_fee_ngn,
+            transaction:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_ngn
+                ?.onsite_part_payment_course_transaction_fee_ngn,
+            total:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_ngn
+                ?.onsite_part_payment_course_total_fee_ngn,
+            balance:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_ngn
+                ?.onsitebalance_ngn,
+            sign: <span>&#8358;</span>,
+            usd: "",
+          };
+        });
+      } else if (
+        formD.currency === "ngn" &&
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diploma"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_ngn_virtual,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_ngn
+                ?.virtual_course_fee_ngn,
+            subtotal:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_ngn
+                ?.virtual_course_total_fee_ngn,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              ?.onsite_course_vat_fee_ngn,
+            transaction:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_ngn
+                ?.virtual_course_transaction_fee_ngn,
+            total:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_ngn
+                ?.virtual_course_total_fee_ngn,
+            balance:
+            fee?.course_virtual_fee
+            ?.virtual_part_paymentcourse_fees_ngn
+            ?.virtualbalance_ngn,
+            sign: <span>&#8358;</span>,
+            usd: "",
+          };
+        });
+      } else if (
+        formD.currency === "ngn" &&
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diploma"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_ngn_virtual,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_ngn
+                ?.virtual_part_payment_course_fee_ngn_due_amount,
+            subtotal:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_ngn
+                ?.virtual_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+              ?.onsite_course_vat_fee_ngn,
+            transaction:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_ngn
+                ?.virtual_part_payment_course_transaction_fee_ngn,
+            total:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_ngn
+                ?.virtual_part_payment_course_total_fee_ngn,
+            balance:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_ngn
+                ?.virtualbalance_ngn,
+            sign: <span>&#8358;</span>,
+            usd: "",
+          };
         });
       }
 
       // for usd
       if (
         formD.currency === "usd" &&
-        formD.classF === "virtual_class" &&
-        formD.payment_plan === "full_payment"
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          amountDue:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_fee_usd,
-          subtotal:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_fee_usd,
-          vat: fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-            ?.virtual_course_vat_fee_usd,
-          transaction:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_transaction_fee_usd,
-          total:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_total_fee_usd,
-              balance: 0,
-          sign: <span>&#36;</span>,
-          usd: "(USD)",
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_fee_usd,
+            subtotal:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_fee_usd,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_transaction_fee_usd,
+            total:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_total_fee_usd,
+            balance:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsitebalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
         });
       } else if (
         formD.currency === "usd" &&
         formD.classF === "physical_class" &&
-        formD.payment_plan === "full_payment"
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          amountDue:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_fee_usd,
-          subtotal:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_fee_usd,
-          vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-            ?.onsite_course_vat_fee_usd,
-          transaction:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_transaction_fee_usd,
-          total:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_total_fee_usd,
-              balance: 0,
-          sign: <span>&#36;</span>,
-          usd: "(USD)",
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_fee_usd_due_amount,
+            subtotal:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_transaction_fee_usd,
+            total:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_total_fee_usd,
+            balance:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsitebalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
         });
       } else if (
         formD.currency === "usd" &&
         formD.classF === "virtual_class" &&
-        formD.payment_plan === "part_payment"
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          subtotal:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_fee,
-          amountDue:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_fee_usd_due_amount,
-          vat: fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-            ?.virtual_part_payment_course_vat_fee_usd,
-          transaction:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_transaction_fee_usd,
-          total:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_total_fee_usd,
-          balance:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtualbalance_usd,
-          sign: <span>&#36;</span>,
-          usd: "(USD)",
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_virtual,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_fee_usd,
+            subtotal:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_total_fee_usd,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_transaction_fee_usd,
+            total:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_total_fee_usd,
+            balance:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_part_payment_course_transaction_fee_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
         });
       } else if (
         formD.currency === "usd" &&
-        formD.classF === "physical_class" &&
-        formD.payment_plan === "part_payment"
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          subtotal:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_fee,
-          amountDue:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_fee_usd_due_amount,
-          vat: fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-            ?.onnsite_part_payment_course_vat_fee_usd,
-          transaction:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_transaction_fee_usd,
-          total:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_total_fee_usd,
-          balance:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsitebalance_usd,
-          sign: <span>&#36;</span>,
-          usd: "(USD)",
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_fee_usd_due_amount,
+            subtotal:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_transaction_fee_usd,
+            total:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_total_fee_usd,
+            balance:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtualbalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
         });
-      } 
+      }
 
-       // for usdt
-       if (
-        formD.currency === "usdt" &&
-        formD.classF === "virtual_class" &&
-        formD.payment_plan === "full_payment"
+      //  for usd diploma or usdt diploma
+      if (
+        (formD.currency === "usd" || formD.currency === 'usdt') &&        formD.classF === "physical_class" &&
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diploma"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          amountDue:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_fee_usd,
-          subtotal:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_fee_usd,
-          vat: fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-            ?.virtual_course_vat_fee_usd,
-          transaction:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_transaction_fee_usd,
-          total:
-            fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
-              ?.virtual_course_total_fee_usd,
-              balance: 0,
-          sign: <span>&#36;</span>,
-          usd: "(USD)",
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_usd_onsite,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_onsite_fees
+                ?.onsite_course_full_payment_fees_usd
+                ?.onsite_course_fee_usd,
+            subtotal:
+            fee?.course_onsite_fees
+            ?.onsite_course_full_payment_fees_usd
+            ?.onsite_course_fee_usd,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+            fee?.course_onsite_fees
+            ?.onsite_course_full_payment_fees_usd
+            ?.onsite_course_transaction_fee_usd,
+            total:
+              fee?.course_onsite_fees
+                ?.onsite_course_full_payment_fees_usd
+                ?.onsite_course_total_fee_usd,
+            balance:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_usd
+                ?.onsitebalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
+        });
+      } else if (
+        (formD.currency === "usd" || formD.currency === 'usdt') &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diploma"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_usd_onsite,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_usd
+                ?.onsite_part_payment_course_fee_usd_due_amount,
+            subtotal:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_usd
+                ?.onsite_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_usd
+                ?.onsite_part_payment_course_transaction_fee_usd,
+            total:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_usd
+                ?.onsite_part_payment_course_total_fee_usd,
+            balance:
+              fee?.course_onsite_fees
+                ?.onsite_part_paymentcourse_fees_usd
+                ?.onsitebalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
+        });
+      } else if (
+        (formD.currency === "usd" || formD.currency === 'usdt') &&
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diploma"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_usd_virtual,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_usd
+                ?.virtual_course_fee_usd,
+            subtotal:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_usd
+                ?.virtual_course_total_fee_usd,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_usd
+                ?.virtual_course_transaction_fee_usd,
+            total:
+              fee?.course_virtual_fee
+                ?.virtual_course_full_payment_fees_usd
+                ?.virtual_course_total_fee_usd,
+            balance:
+            fee?.course_virtual_fee
+            ?.virtual_part_paymentcourse_fees_usd
+            ?.virtualbalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
+        });
+      } else if (
+        (formD.currency === "usd" || formD.currency === 'usdt') &&
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diploma"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_diploma_only_course_fee_usd_virtual,
+            discount_deadline: fee?.diploma_only_discount_deadline,
+            amountDue:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_usd
+                ?.virtual_part_payment_course_fee_usd_due_amount,
+            subtotal:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_usd
+                ?.virtual_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_usd
+                ?.virtual_part_payment_course_transaction_fee_usd,
+            total:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_usd
+                ?.virtual_part_payment_course_total_fee_usd,
+            balance:
+              fee?.course_virtual_fee
+                ?.virtual_part_paymentcourse_fees_usd
+                ?.virtualbalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
+        });
+      }
+
+      // for usdt
+      if (
+        formD.currency === "usdt" &&
+        formD.classF === "physical_class" &&
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diplomaplus"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_fee_usd,
+            subtotal:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_fee_usd,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_transaction_fee_usd,
+            total:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_course_full_payment_fees_usd
+                ?.combo_onsite_course_total_fee_usd,
+            balance:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsitebalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
         });
       } else if (
         formD.currency === "usdt" &&
         formD.classF === "physical_class" &&
-        formD.payment_plan === "full_payment"
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          amountDue:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_fee_usd,
-          subtotal:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_fee_usd,
-          vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-            ?.onsite_course_vat_fee_usd,
-          transaction:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_transaction_fee_usd,
-          total:
-            fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
-              ?.onsite_course_total_fee_usd,
-              balance: 0,
-          sign: <span>&#36;</span>,
-          usd: "(USD)",
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_fee_usd_due_amount,
+            subtotal:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_transaction_fee_usd,
+            total:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsite_part_payment_course_total_fee_usd,
+            balance:
+              fee?.combo_course_onsite_fees
+                ?.combo_onsite_part_paymentcourse_fees_usd
+                ?.combo_onsitebalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
         });
       } else if (
         formD.currency === "usdt" &&
         formD.classF === "virtual_class" &&
-        formD.payment_plan === "part_payment"
+        formD.payment_plan === "full_payment" &&
+        formD.course_level === "diplomaplus"
       ) {
-        setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          subtotal:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_fee,
-          amountDue:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_fee_usd_due_amount,
-          vat: fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-            ?.virtual_part_payment_course_vat_fee_usd,
-          transaction:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_transaction_fee_usd,
-          total:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtual_part_payment_course_total_fee_usd,
-          balance:
-            fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
-              ?.virtualbalance_usd,
-          sign: <span>&#36;</span>,
-          usd: "(USD)",
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_virtual,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_fee_usd,
+            subtotal:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_total_fee_usd,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_transaction_fee_usd,
+            total:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_course_total_fee_usd,
+            balance:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_course_full_payment_fees_usd
+                ?.combo_virtual_part_payment_course_transaction_fee_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
         });
       } else if (
         formD.currency === "usdt" &&
-        formD.classF === "physical_class" &&
-        formD.payment_plan === "part_payment"
+        formD.classF === "virtual_class" &&
+        formD.payment_plan === "part_payment" &&
+        formD.course_level === "diplomaplus"
+      ) {
+        setEachFee((prev) => {
+          return {
+            ...prev,
+            partpaymentbalancepercentage: 30,
+            partpaymentpercentage: 70,
+            offset: fee?.actual_combo_course_fee_usd_onsite,
+            discount_deadline: fee?.combo_discount_deadline,
+            amountDue:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_fee_usd_due_amount,
+            subtotal:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_fee,
+            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+              ?.onsite_course_vat_fee_usd,
+            transaction:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_transaction_fee_usd,
+            total:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtual_part_payment_course_total_fee_usd,
+            balance:
+              fee?.course_combo_virtual_fee
+                ?.combo_virtual_part_paymentcourse_fees_usd
+                ?.combo_virtualbalance_usd,
+            sign: <span>&#36;</span>,
+            usd: "(USD)",
+          };
+        });
+      }
+
+      //for sandbox
+      if (formD.course_level === "sandbox" && formD.currency === "ngn") {
+        setEachFee({
+          partpaymentbalancepercentage: null,
+          partpaymentpercentage: null,
+          offset: null,
+          discount_deadline: null,
+          subtotal: sandbox?.ngn_price,
+          amountDue: sandbox?.ngn_price,
+          vat: null,
+          transaction: null,
+          total: sandbox?.ngn_price,
+          balance: null,
+          sign: <span>&#8358;</span>,
+          usd: "",
+        });
+      } else if (
+        formD.course_level === "sandbox" &&
+        (formD.currency === "usd" || formD.currency === "usdt")
       ) {
         setEachFee({
-          partpaymentbalancepercentage: fee.partpaymentbalancepercentage,
-            partpaymentpercentage:fee.partpaymentpercentage,
-          offset: fee.offset_usd,
-          discount_deadline: fee.discount_deadline,
-          subtotal:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_fee,
-          amountDue:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_fee_usd_due_amount,
-          vat: fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-            ?.onnsite_part_payment_course_vat_fee_usd,
-          transaction:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_transaction_fee_usd,
-          total:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsite_part_payment_course_total_fee_usd,
-          balance:
-            fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
-              ?.onsitebalance_usd,
+          partpaymentbalancepercentage: null,
+          partpaymentpercentage: null,
+          offset: null,
+          discount_deadline: null,
+          subtotal: sandbox?.usd_price,
+          amountDue: sandbox?.usd_price,
+          vat: null,
+          transaction: null,
+          total: sandbox?.usd_price,
+          balance: null,
           sign: <span>&#36;</span>,
           usd: "(USD)",
         });
-      } 
+      }
     }
     gg();
-  }, [formD, fee, country, certCourse, diplomaCourse]);
+  }, [formD, fee, country, diplomaPlusCourse, diplomaCourse, sandbox]);
 
+  console.log(eachFee);
+  //to check if any course has just one class format
+  // useEffect(() => {
+  //   if (!fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn?.onsite_course_fee_ngn || !fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd?.onsite_course_fee_usd) {
+  //     physicalref.current.style.display = "none";
+  //     virtualref.current.style.display = 'block'
+  //     formD.classF = 'virtual_class'
 
-//to check if any course has just one class format
-useEffect(()=>{
-  if (!fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn?.onsite_course_fee_ngn || !fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd?.onsite_course_fee_usd){
-    physicalref.current.style.display = "none"; 
-    virtualref.current.style.display = 'block'
-    formD.classF = 'virtual_class'
+  //   } else if (!fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn?.virtual_course_fee_ngn || !fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd?.virtual_course_fee_usd) {
+  //     virtualref.current.style.display = "none"
+  //     formD.classF = 'physical_class'
+  //   } else {
+  //     virtualref.current.style.display = 'block'
+  //     physicalref.current.style.display = 'block'
+  //   }
+  // }, [fee, formD])
 
-  }else if(!fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn?.virtual_course_fee_ngn || !fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd?.virtual_course_fee_usd){
-    virtualref.current.style.display = "none"
-    formD.classF = 'physical_class'
-  }else{
-    virtualref.current.style.display = 'block'
-    physicalref.current.style.display = 'block'
-  }
-},[fee,formD])
-  
   //for duplicate data
-  useEffect(()=>{
-    fetch(`https://backend.pluralcode.institute/check-enrol?email=${formD.email}&course=${formD.course}`)
-    .then(response=>response.json())
-    .then(result=>{
-    setDuplicate(result.message)})
-    .catch(err=>console.log(err))
-  },[formD.email,formD.course])
+  useEffect(() => {
+    fetch(
+      `https://backend.pluralcode.institute/check-enrol?email=${formD.email}&course=${formD.course}`
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        setDuplicate(result.message);
+      })
+      .catch((err) => console.log(err));
+  }, [formD.email, formD.course]);
 
   //offset i.e discount prices
   useEffect(() => {
-
-    if (eachFee.offset > 0 && formD.payment_plan=== 'full_payment') {
-      const oldPrice = eachFee.offset + eachFee.amountDue
+    if (eachFee.offset > 0 && formD.payment_plan === "full_payment") {
+      const oldPrice = eachFee.offset;
       setOldPrice({
         price: oldPrice,
-        date: eachFee.discount_deadline
-      })
+        date: eachFee?.discount_deadline,
+      });
     } else {
       setOldPrice({
         price: "",
-        date: ""
-      })
+        date: "",
+      });
     }
-    const cohname = cohort.map(e=>e).filter(e=>e.id=== parseInt(formD.cohort))
-    setchname(cohname)
-  }, [eachFee.amountDue, eachFee.offset, eachFee.discount_deadline,cohort,formD.cohort, formD.payment_plan])
+    const cohname = cohort
+      .map((e) => e)
+      .filter((e) => e.id === parseInt(formD.cohort));
+    setchname(cohname);
+  }, [
+    eachFee.amountDue,
+    eachFee.offset,
+    eachFee.discount_deadline,
+    cohort,
+    formD.cohort,
+    formD.payment_plan,
+  ]);
 
   //submit the form
   var rn = require("random-number");
@@ -704,9 +1209,9 @@ useEffect(()=>{
       } else if (formD.cohort === "") {
         setErrMsgCh("Cohort required!");
         setErrMsg("All fields required!");
-      }else if(duplicate !== "No records found"){
-        setErrMsg("You are already enrolled in this course!")
-      } else if(formD.currency === 'usd' || formD.currency === 'ngn') {
+      } else if (duplicate !== "No records found") {
+        setErrMsg("You are already enrolled in this course!");
+      } else if (formD.currency === "usd" || formD.currency === "ngn") {
         sp.style.display = "block";
         sp2.style.display = "block";
 
@@ -715,13 +1220,19 @@ useEffect(()=>{
           amount: eachFee.total,
           currency: formD.currency.toUpperCase(),
           title: formD.course + " Enrollment",
-          redirect_url: `https://pluralcode.academy/admissions/payment?name=${formD.full_name
-            }&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF
-            }&course=${formD.course}&country=${formD.country}&state=${formD.state
-            }&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort
-            }&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level
-            }&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range
-            }&pay=${formD.payment_plan}&ref=${referral}`,
+          redirect_url: `https://pluralcode.academy/admissions/payment?name=${
+            formD.full_name
+          }&email=${formD.email}&phone_number=${formD.phone_number}&mode=${
+            formD.classF
+          }&course=${formD.course}&country=${formD.country}&state=${
+            formD.state
+          }&currency=${formD.currency.toUpperCase()}&cohort_id=${
+            formD.cohort
+          }&courseid=${fee.id}&program=${formD.course_level}&academy=${
+            formD.academy_level
+          }&balance=${eachFee.balance}&total=${eachFee.total}&age=${
+            formD.age_range
+          }&pay=${formD.payment_plan}&ref=${referral}`,
           email: formD.email,
           phonenumber: formD.phone_number,
           name: formD.full_name,
@@ -747,25 +1258,33 @@ useEffect(()=>{
           .catch((err) => console.log(err));
       }
       //
-      else if(formD.currency === 'usdt') {
+      else if (formD.currency === "usdt") {
         sp.style.display = "block";
         sp2.style.display = "block";
-        const fullname=formD.full_name.replace(/ /g,"_")
-        const st=formD.state.replace(/ /g,"_")
-        const cour = formD.course.replace(/ /g,"_")
+        const fullname = formD.full_name.replace(/ /g, "_");
+        const st = formD.state.replace(/ /g, "_");
+        const cour = formD.course.replace(/ /g, "_");
         // const upperCurrency = formD.currency.toUpperCase() ///
         const raw = JSON.stringify({
           amount: eachFee.amountDue,
-          baseFiat: 'USD',
-          redirectLink: `pluralcode.academy/admissions/payment?name=${fullname}&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF
-          }&course=${cour}&country=${formD.country}&state=${st}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort
-          }&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level
-          }&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range
+          baseFiat: "USD",
+          redirectLink: `pluralcode.academy/admissions/payment?name=${fullname}&email=${
+            formD.email
+          }&phone_number=${formD.phone_number}&mode=${
+            formD.classF
+          }&course=${cour}&country=${
+            formD.country
+          }&state=${st}&currency=${formD.currency.toUpperCase()}&cohort_id=${
+            formD.cohort
+          }&courseid=${fee.id}&program=${formD.course_level}&academy=${
+            formD.academy_level
+          }&balance=${eachFee.balance}&total=${eachFee.total}&age=${
+            formD.age_range
           }&pay=${formD.payment_plan}&ref=${referral}`,
           name: formD.full_name,
-          description: formD.course
+          description: formD.course,
         });
-        
+
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -781,10 +1300,9 @@ useEffect(()=>{
           .then((response) => response.json())
           .then((result) => {
             // window.open(result.paymentlink);
-            window.location.href= result.paymentlink
+            window.location.href = result.paymentlink;
             sp.style.display = "none";
             sp2.style.display = "none";
-            
           })
           .catch((err) => console.log(err));
       }
@@ -797,8 +1315,8 @@ useEffect(()=>{
   return (
     <>
       <FormNav
-      offset={oldPrice.price}
-      deadline={oldPrice.date}
+        offset={oldPrice.price}
+        deadline={oldPrice.date}
         amountdue={eachFee.amountDue}
         vat={eachFee.vat}
         transaction={eachFee.transaction}
@@ -853,7 +1371,9 @@ useEffect(()=>{
                     required
                     className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                   />
-                  <p className="text-xs font-['Gilroy-semibold'] pt-2" >{emailmsg}</p>
+                  <p className="text-xs font-['Gilroy-semibold'] pt-2">
+                    {emailmsg}
+                  </p>
                   <p className="text-red-600">{errMsgE}</p>
                 </div>
                 <div className="ad-input flex flex-col py-2 lg:py-3">
@@ -990,38 +1510,58 @@ useEffect(()=>{
                 <div className="ad-input flex flex-col py-2 lg:py-3">
                   <label className="textdark pb-2">Course Level</label>
                   <div className="flex gap-8">
-                    <div className="">
-                      <label className="container text-base ten">
-                        Diploma{" "}
-                        <span className="text-xs eight">
-                          (Beginner to Advanced)
-                        </span>
-                        <input
-                          type="radio"
-                          name="course_level"
-                          checked={formD.course_level === "diploma"}
-                          value="diploma"
-                          onChange={handleForm}
-                          required
-                        />
-                        <span className="checkmark"></span>
-                      </label>
-                    </div>
-                    <div className="">
-                      <label className="container text-base ten">
-                        Entry Level{" "}
-                        <span className="eight text-xs">(Beginner)</span>
-                        <input
-                          type="radio"
-                          required
-                          name="course_level"
-                          value="entry"
-                          checked={formD.course_level === "entry"}
-                          onChange={handleForm}
-                        />
-                        <span className="checkmark"></span>
-                      </label>
-                    </div>
+                    {showDip && (
+                      <>
+                        <div className="">
+                          <label className="container text-base ten">
+                            Diploma+
+                            <span className="text-xs eight">
+                              (Diploma Plus)
+                            </span>
+                            <input
+                              type="radio"
+                              name="course_level"
+                              checked={formD.course_level === "diplomaplus"}
+                              value="diplomaplus"
+                              onChange={handleForm}
+                              required
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                        </div>
+                        <div className="">
+                          <label className="container text-base ten">
+                            Diploma
+                            {/* <span className="eight text-xs">(Beginner)</span> */}
+                            <input
+                              type="radio"
+                              required
+                              name="course_level"
+                              value="diploma"
+                              checked={formD.course_level === "diploma"}
+                              onChange={handleForm}
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                        </div>
+                      </>
+                    )}
+                    {showSandbox && (
+                      <div className="">
+                        <label className="container text-base ten">
+                          Sandbox only
+                          <input
+                            type="radio"
+                            required
+                            name="course_level"
+                            value="sandbox"
+                            checked={formD.course_level === "sandbox"}
+                            onChange={handleForm}
+                          />
+                          <span className="checkmark"></span>
+                        </label>
+                      </div>
+                    )}
                   </div>
                   <div className="entry-details" ref={entryref}>
                     <p className="green text-xs lg:text-sm pt-2">
@@ -1270,7 +1810,7 @@ useEffect(()=>{
                       Select your course of interest
                     </option>
 
-                    {formD.course_level === "entry" ? certC : dipC}
+                    {formD.course_level === "diplomaplus" ? dipplusC : dipC}
                   </select>
                   <p className="text-red-600">{errMsgCo}</p>
                 </div>
@@ -1379,7 +1919,10 @@ useEffect(()=>{
                         checked={checkedpart}
                         onChange={handleCheckpart}
                       />
-                        <p className="w-full text-sm">Kindly note that installment payment requires {eachFee.partpaymentpercentage}% down payment and Balance 4 weeks into the start of class.
+                      <p className="w-full text-sm">
+                        Kindly note that installment payment requires{" "}
+                        {eachFee.partpaymentpercentage}% down payment and
+                        Balance 4 weeks into the start of class.
                       </p>
                     </div>
                     <p className="text-red-500 lg:text-lg">{errMsgPp}</p>
@@ -1445,8 +1988,9 @@ useEffect(()=>{
                   children="Student Policy"
                 />
                 <p className="refund font-['gextra'] lg:pt-2 ">
-                  
-Students are advised to read Pluralcode’s Student policy in order to be fully informed about standards and policies of the institution. You can read more by clicking the link below.
+                  Students are advised to read Pluralcode’s Student policy in
+                  order to be fully informed about standards and policies of the
+                  institution. You can read more by clicking the link below.
                 </p>
                 <div className="flex gap-2 pt-4">
                   <input
@@ -1517,28 +2061,39 @@ Students are advised to read Pluralcode’s Student policy in order to be fully 
                     />
                     <p className="lg:text-lg">
                       Cohort |{" "}
-                      <span className="reg lg:text-lg">{chname.length>0 && chname[0].name}</span>
+                      <span className="reg lg:text-lg">
+                        {chname.length > 0 && chname[0].name}
+                      </span>
                     </p>
                   </div>
                   <div className="w-3/5 text-right boldIt lg:text-xl textdark">
-                    {oldPrice.price && <p className="striketh text-lg">{eachFee.sign} {numFor.format(
-                      isNaN(oldPrice.price) ? 0 : oldPrice.price
-                    )} {eachFee.usd}</p>}
+                    {oldPrice.price && (
+                      <p className="striketh text-lg">
+                        {eachFee.sign}{" "}
+                        {numFor.format(
+                          isNaN(oldPrice.price) ? 0 : oldPrice.price
+                        )}{" "}
+                        {eachFee.usd}
+                      </p>
+                    )}
                     {eachFee.sign}{" "}
                     {numFor.format(
                       isNaN(eachFee.subtotal) ? 0 : eachFee?.subtotal
                     )}{" "}
                     {eachFee.usd}
-                    {oldPrice.date && <p className="discount text-sm">Discount Ends {oldPrice.date}</p>}
+                    {oldPrice.date && (
+                      <p className="discount text-sm">
+                        Discount Ends {oldPrice.date}
+                      </p>
+                    )}
                   </div>
                 </div>
                 {/* balance for part payment */}
                 <div className="part-payment-fee" ref={partFee}>
                   <div className="flex justify-between items-center pt-4 pb-8">
                     <div className="textdark">
-                      <p
-                        className="text-xl lg:text-2xl"
-                        >Amount to pay {eachFee.partpaymentpercentage}%
+                      <p className="text-xl lg:text-2xl">
+                        Amount to pay {eachFee.partpaymentpercentage}%
                       </p>
                     </div>
                     <p className="boldIt lg:text-xl textdark">
@@ -1551,8 +2106,7 @@ Students are advised to read Pluralcode’s Student policy in order to be fully 
                   </div>
                   <div className="flex justify-between items-center pb-4">
                     <div className="textdark">
-                      <p
-                        className="text-xl lg:text-2xl">
+                      <p className="text-xl lg:text-2xl">
                         Balance to pay {eachFee.partpaymentbalancepercentage}%
                       </p>
                     </div>
@@ -1606,7 +2160,7 @@ Students are advised to read Pluralcode’s Student policy in order to be fully 
                     >
                       <BiLoaderAlt />
                     </div>
-                    Pay {" "}{eachFee.sign}{" "}
+                    Pay {eachFee.sign}{" "}
                     {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
                     {eachFee.usd}
                   </button>
