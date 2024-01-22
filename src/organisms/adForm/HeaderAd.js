@@ -10,7 +10,7 @@ const HeaderAd = () => {
       <div className="bgcolor m-0 px-4 pt-0 pb-4 md:px-6 md:pt-0 md:pb-6 lg:px-16 lg:py-0 ">
         
         <div className="flex flex-col-reverse lg:flex-row">
-          <div className="w-full">
+          <div className="w-full lg:w-2/4 xl:full">
             <div className="pt-8 lg:pt-28">
               <p className="adtext text-white">
                 Admission <span className="seccolor">Form</span>

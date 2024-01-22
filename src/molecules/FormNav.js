@@ -28,7 +28,7 @@ const FormNav = ({
       if (form.course !== ""){
           mob.current.style.display="block"
         }
-        if (form.payment_plan === "part_payment" && form.course_level==="diploma") {
+        if (form.payment_plan === "part_payment" && (form.course_level==="diploma" || form.course_level=== 'diplomaplus')) {
             part2.current.style.display = "block";
         }else{part2.current.style.display="none"} 
     },[form.payment_plan,form.course,form.course_level])

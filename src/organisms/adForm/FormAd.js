@@ -10,7 +10,7 @@ import { BiLoaderAlt } from "react-icons/bi";
 
 const FormAd = () => {
   const liveD = useRef();
-  const entryref = useRef();
+  const diplomaplusref = useRef();
   const diplomaref = useRef();
   const partpay = useRef();
   const physicalref = useRef();
@@ -106,8 +106,13 @@ const FormAd = () => {
     if (getSandbox === "1") {
       setShowDip(false);
       setShowSandbox(true);
+      setFee({
+        name: formD.course,
+      });
       physicalref.current.style.display = "none";
       payBody.current.style.display = "none";
+      diplomaplusref.current.style.display = "none";
+      diplomaplusref.current.style.display = "none";
       formD.course_level = "sandbox";
     }
   }, [showSandbox, getSandbox, showDip, formD]);
@@ -199,11 +204,15 @@ const FormAd = () => {
     if (formD.course_level === "sandbox") {
       payBody.current.style.display = "none";
       physicalref.current.style.display = "none";
+    } else if (value === "diploma") {
+      diplomaref.current.style.display = "block";
+      diplomaplusref.current.style.display = "none";
+      payBody.current.style.display = "block";
       formD.course = "";
       setFee([]);
-    } else if (value === "diploma" || value === "diplomaplus") {
-      diplomaref.current.style.display = "block";
-      // physicalref.current.style.display = "block";
+    }else if (value === "diplomaplus") {
+      diplomaplusref.current.style.display = "block";
+      diplomaref.current.style.display = "none";
       payBody.current.style.display = "block";
       formD.course = "";
       setFee([]);
@@ -432,7 +441,7 @@ const FormAd = () => {
           };
         });
       }
-//  for ngn diploma
+      //  for ngn diploma
       if (
         formD.currency === "ngn" &&
         formD.classF === "physical_class" &&
@@ -447,26 +456,21 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_ngn_onsite,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_onsite_fees
-                ?.onsite_course_full_payment_fees_ngn
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 ?.onsite_course_fee_ngn,
             subtotal:
-            fee?.course_onsite_fees
-            ?.onsite_course_full_payment_fees_ngn
-            ?.onsite_course_fee_ngn,
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+                ?.onsite_course_fee_ngn,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
               ?.onsite_course_vat_fee_ngn,
             transaction:
-            fee?.course_onsite_fees
-            ?.onsite_course_full_payment_fees_ngn
-            ?.onsite_course_transaction_fee_ngn,
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+                ?.onsite_course_transaction_fee_ngn,
             total:
-              fee?.course_onsite_fees
-                ?.onsite_course_full_payment_fees_ngn
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
                 ?.onsite_course_total_fee_ngn,
             balance:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_ngn
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
                 ?.onsitebalance_ngn,
             sign: <span>&#8358;</span>,
             usd: "",
@@ -486,26 +490,21 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_ngn_onsite,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_ngn
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
                 ?.onsite_part_payment_course_fee_ngn_due_amount,
             subtotal:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_ngn
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
                 ?.onsite_part_payment_course_fee,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
               ?.onsite_course_vat_fee_ngn,
             transaction:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_ngn
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
                 ?.onsite_part_payment_course_transaction_fee_ngn,
             total:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_ngn
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
                 ?.onsite_part_payment_course_total_fee_ngn,
             balance:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_ngn
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_ngn
                 ?.onsitebalance_ngn,
             sign: <span>&#8358;</span>,
             usd: "",
@@ -525,27 +524,22 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_ngn_virtual,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_ngn
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
                 ?.virtual_course_fee_ngn,
             subtotal:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_ngn
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
                 ?.virtual_course_total_fee_ngn,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
               ?.onsite_course_vat_fee_ngn,
             transaction:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_ngn
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
                 ?.virtual_course_transaction_fee_ngn,
             total:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_ngn
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_ngn
                 ?.virtual_course_total_fee_ngn,
             balance:
-            fee?.course_virtual_fee
-            ?.virtual_part_paymentcourse_fees_ngn
-            ?.virtualbalance_ngn,
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
+                ?.virtualbalance_ngn,
             sign: <span>&#8358;</span>,
             usd: "",
           };
@@ -564,26 +558,21 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_ngn_virtual,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_ngn
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
                 ?.virtual_part_payment_course_fee_ngn_due_amount,
             subtotal:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_ngn
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
                 ?.virtual_part_payment_course_fee,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
               ?.onsite_course_vat_fee_ngn,
             transaction:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_ngn
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
                 ?.virtual_part_payment_course_transaction_fee_ngn,
             total:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_ngn
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
                 ?.virtual_part_payment_course_total_fee_ngn,
             balance:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_ngn
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_ngn
                 ?.virtualbalance_ngn,
             sign: <span>&#8358;</span>,
             usd: "",
@@ -752,7 +741,8 @@ const FormAd = () => {
 
       //  for usd diploma or usdt diploma
       if (
-        (formD.currency === "usd" || formD.currency === 'usdt') &&        formD.classF === "physical_class" &&
+        (formD.currency === "usd" || formD.currency === "usdt") &&
+        formD.classF === "physical_class" &&
         formD.payment_plan === "full_payment" &&
         formD.course_level === "diploma"
       ) {
@@ -764,33 +754,28 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_usd_onsite,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_onsite_fees
-                ?.onsite_course_full_payment_fees_usd
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
                 ?.onsite_course_fee_usd,
             subtotal:
-            fee?.course_onsite_fees
-            ?.onsite_course_full_payment_fees_usd
-            ?.onsite_course_fee_usd,
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+                ?.onsite_course_fee_usd,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
               ?.onsite_course_vat_fee_usd,
             transaction:
-            fee?.course_onsite_fees
-            ?.onsite_course_full_payment_fees_usd
-            ?.onsite_course_transaction_fee_usd,
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
+                ?.onsite_course_transaction_fee_usd,
             total:
-              fee?.course_onsite_fees
-                ?.onsite_course_full_payment_fees_usd
+              fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
                 ?.onsite_course_total_fee_usd,
             balance:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_usd
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
                 ?.onsitebalance_usd,
             sign: <span>&#36;</span>,
             usd: "(USD)",
           };
         });
       } else if (
-        (formD.currency === "usd" || formD.currency === 'usdt') &&
+        (formD.currency === "usd" || formD.currency === "usdt") &&
         formD.classF === "physical_class" &&
         formD.payment_plan === "part_payment" &&
         formD.course_level === "diploma"
@@ -803,33 +788,28 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_usd_onsite,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_usd
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
                 ?.onsite_part_payment_course_fee_usd_due_amount,
             subtotal:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_usd
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
                 ?.onsite_part_payment_course_fee,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
               ?.onsite_course_vat_fee_usd,
             transaction:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_usd
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
                 ?.onsite_part_payment_course_transaction_fee_usd,
             total:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_usd
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
                 ?.onsite_part_payment_course_total_fee_usd,
             balance:
-              fee?.course_onsite_fees
-                ?.onsite_part_paymentcourse_fees_usd
+              fee?.course_onsite_fees?.onsite_part_paymentcourse_fees_usd
                 ?.onsitebalance_usd,
             sign: <span>&#36;</span>,
             usd: "(USD)",
           };
         });
       } else if (
-        (formD.currency === "usd" || formD.currency === 'usdt') &&
+        (formD.currency === "usd" || formD.currency === "usdt") &&
         formD.classF === "virtual_class" &&
         formD.payment_plan === "full_payment" &&
         formD.course_level === "diploma"
@@ -842,33 +822,28 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_usd_virtual,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_usd
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
                 ?.virtual_course_fee_usd,
             subtotal:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_usd
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
                 ?.virtual_course_total_fee_usd,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
               ?.onsite_course_vat_fee_usd,
             transaction:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_usd
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
                 ?.virtual_course_transaction_fee_usd,
             total:
-              fee?.course_virtual_fee
-                ?.virtual_course_full_payment_fees_usd
+              fee?.course_virtual_fee?.virtual_course_full_payment_fees_usd
                 ?.virtual_course_total_fee_usd,
             balance:
-            fee?.course_virtual_fee
-            ?.virtual_part_paymentcourse_fees_usd
-            ?.virtualbalance_usd,
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
+                ?.virtualbalance_usd,
             sign: <span>&#36;</span>,
             usd: "(USD)",
           };
         });
       } else if (
-        (formD.currency === "usd" || formD.currency === 'usdt') &&
+        (formD.currency === "usd" || formD.currency === "usdt") &&
         formD.classF === "virtual_class" &&
         formD.payment_plan === "part_payment" &&
         formD.course_level === "diploma"
@@ -881,26 +856,21 @@ const FormAd = () => {
             offset: fee?.actual_diploma_only_course_fee_usd_virtual,
             discount_deadline: fee?.diploma_only_discount_deadline,
             amountDue:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_usd
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
                 ?.virtual_part_payment_course_fee_usd_due_amount,
             subtotal:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_usd
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
                 ?.virtual_part_payment_course_fee,
             vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd
               ?.onsite_course_vat_fee_usd,
             transaction:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_usd
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
                 ?.virtual_part_payment_course_transaction_fee_usd,
             total:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_usd
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
                 ?.virtual_part_payment_course_total_fee_usd,
             balance:
-              fee?.course_virtual_fee
-                ?.virtual_part_paymentcourse_fees_usd
+              fee?.course_virtual_fee?.virtual_part_paymentcourse_fees_usd
                 ?.virtualbalance_usd,
             sign: <span>&#36;</span>,
             usd: "(USD)",
@@ -1311,6 +1281,7 @@ const FormAd = () => {
       setErrMsg("Box must be checked!");
     }
   };
+  console.log(fee);
 
   return (
     <>
@@ -1514,7 +1485,7 @@ const FormAd = () => {
                       <>
                         <div className="">
                           <label className="container text-base ten">
-                            Diploma+
+                            Diploma+{" "}
                             <span className="text-xs eight">
                               (Diploma Plus)
                             </span>
@@ -1563,14 +1534,14 @@ const FormAd = () => {
                       </div>
                     )}
                   </div>
-                  <div className="entry-details" ref={entryref}>
+                  <div className="entry-details" ref={diplomaref}>
                     <p className="green text-xs lg:text-sm pt-2">
-                      The Entry Level classes focus on foundational knowledge in
-                      a dynamic 2 months program. What you learn here will be
-                      enough to start you career as an intern or entry level
-                      techie. Live classes (onsite or virtual) are available
-                      every weekend and you will earn a Certificate of
-                      Achievement at the end of your course.
+                      The Diploma seek to take you on a premium journey from
+                      beginner to advanced level in your chosen field. 4 months
+                      live classes, 2 semesters, high-level projects, And of
+                      course a globally recognized diploma both from Pluralcode
+                      & one of our accreditation partners in the US, Canada or
+                      Europe.
                     </p>
                     <span
                       onClick={handleRead}
@@ -1579,9 +1550,9 @@ const FormAd = () => {
                       {readMore ? "Show Less" : "Read More"}
                     </span>
 
-                    {/* Certificate Benefits */}
+                    {/* Diploma Benefits */}
                     {readMore && (
-                      <div className="mt-4 md:w-80 border border-black rounded-3xl p-4 md:p-8">
+                      <div className="mt-4 md:w-96 border border-black rounded-3xl p-4 md:p-8">
                         <Text
                           className="textcolor bold text-base lg:text-2xl text-center"
                           children="Benefits"
@@ -1601,7 +1572,7 @@ const FormAd = () => {
                           </div>
                           <Text
                             className="text-sm lg:text-base"
-                            children="2 Months Expert Training"
+                            children="4 Months Expert Training"
                           />
                         </div>
                         <div className="flex gap-4 py-2 items-center">
@@ -1628,7 +1599,7 @@ const FormAd = () => {
                           </div>
                           <Text
                             className="text-sm lg:text-base"
-                            children="Weekly Live Classes"
+                            children="Global Diploma Recognition"
                           />
                         </div>
                         <div className="flex gap-4 py-2 items-center">
@@ -1637,32 +1608,28 @@ const FormAd = () => {
                           </div>
                           <Text
                             className="text-sm lg:text-base"
-                            children="Capstone Projects"
+                            children="Access to Dozens of Expert videos"
                           />
                         </div>
-                        <div className="flex gap-4 py-2 items-center">
-                          <div>
-                            <Images className="w-3 lg:w-4" src={chkgreen} />
-                          </div>
-                          <Text
-                            className="text-sm lg:text-base"
-                            children="Certificate of Achievement"
-                          />
-                        </div>
+                        
                       </div>
                     )}
                   </div>
 
-                  <div className="diploma-details" ref={diplomaref}>
+                  <div className="diploma-details" ref={diplomaplusref}>
                     <p className="green text-xs lg:text-sm pt-2">
-                      The Diploma seek to take you on a premium journey from
-                      beginner to advanced level in your chosen field. 4 months
-                      live classes, 2 semesters, high-level projects, added 1-2
-                      months virtual internship with Pluralcode or one of our
-                      hiring partners, building up to the perfect learning &
-                      work experience all in one. And of course a globally
-                      recognized diploma both from Pluralcode & one of our
-                      accreditation partners in the US, Canada or Europe.
+                      The Diploma+ combines all the benefits of Pluralcode’s
+                      Diploma program as well as 2-3 months of market-readiness
+                      training that will instantly position you to make
+                      thousands of dollars with the skills you have acquired. 4
+                      months live classes, 2 semesters, high-level projects,
+                      added 1 month of career training on portfolio development,
+                      brand building, high ticket selling, negotiation etc, and
+                      2 months virtual internship with Pluralcode or one of our
+                      hiring partners, a globally recognised Diploma both from
+                      Pluralcode & one of our accreditation partners in the US,
+                      Canada or Europe and a recommendation letter from your
+                      company of deployment.
                     </p>
                     <span
                       onClick={handleRead}
@@ -1671,9 +1638,9 @@ const FormAd = () => {
                       {readMore ? "Show Less" : "Read More"}
                     </span>
 
-                    {/*Diploma Benefits */}
+                    {/*Diploma plus Benefits */}
                     {readMore && (
-                      <div className="mt-4 border border-black rounded-3xl p-2 lg:p-8">
+                      <div className="mt-4 border border-black rounded-3xl p-2 lg:p-4 xl:p-8">
                         <Text
                           className="textcolor pb-4 bold text-base lg:text-2xl text-center"
                           children="Benefits"
@@ -1686,7 +1653,7 @@ const FormAd = () => {
                               </div>
                               <Text
                                 className="w-full text-sm lg:text-base"
-                                children="Career Guidance"
+                                children="Global Diploma Recognition"
                               />
                             </div>
                             <div className="flex gap-2 lg:gap-4 py-2 items-center">
@@ -1742,7 +1709,7 @@ const FormAd = () => {
                               </div>
                               <Text
                                 className="w-full text-sm lg:text-base"
-                                children="Global Diploma Recognition"
+                                children="Recommendation Letter"
                               />
                             </div>
                             <div className="flex gap-2 lg:gap-4 py-2 items-center">
@@ -1760,7 +1727,7 @@ const FormAd = () => {
                               </div>
                               <Text
                                 className="w-full text-sm lg:text-base"
-                                children="High-Level Capstone Projects"
+                                children="Brand Building Workshops"
                               />
                             </div>
                             <div className="flex gap-2 lg:gap-4 py-2 items-center">
@@ -1769,7 +1736,7 @@ const FormAd = () => {
                               </div>
                               <Text
                                 className="w-full text-sm lg:text-base"
-                                children="Higher Earning Potential"
+                                children="Freelance Monetization Training"
                               />
                             </div>
                             <div className="flex gap-2 lg:gap-4 py-2 items-center">
@@ -1778,7 +1745,7 @@ const FormAd = () => {
                               </div>
                               <Text
                                 className="w-full text-sm lg:text-base"
-                                children="Beginner-Friendly"
+                                children="Listing On Our Recruitment Platform"
                               />
                             </div>
                             <div className="flex gap-2 lg:gap-4 py-2 items-center">
