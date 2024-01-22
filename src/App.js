@@ -10,10 +10,9 @@ function App() {
   ReactGA.send({ hitType: "pageview", page: "/admissions/payment", title: "Success page" });
   return (
     <>
-    {/* basename={'/admissions'} */}
-    <Routes >
-      <Route path='/' element={<AdmissionForm/>} />
-      <Route path='/payment' element={<Payment/>} />
+    <Routes basename={'/admissions'}>
+      <Route path='/admissions' element={<AdmissionForm/>} />
+      <Route path='/admissions/payment' element={<Payment/>} />
     </Routes>
     </>
   );
