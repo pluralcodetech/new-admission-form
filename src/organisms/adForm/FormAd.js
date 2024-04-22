@@ -2,16 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import Text from "../../atom/Text";
 // import { Formik, Form, Field } from "formik";
 import { Link } from "react-router-dom";
-import Images from "../../atom/Images";
-import chkgreen from "../../images/Group.png";
+// import Images from "../../atom/Images";
+// import chkgreen from "../../images/Group.png";
 import FormNav from "../../molecules/FormNav";
 import HeaderAd from "./HeaderAd";
 import { BiLoaderAlt } from "react-icons/bi";
 
 const FormAd = () => {
   const liveD = useRef();
-  const diplomaplusref = useRef();
-  const diplomaref = useRef();
+  // const diplomaplusref = useRef();
+  // const diplomaref = useRef();
   const partpay = useRef();
   const physicalref = useRef();
   const virtualref = useRef();
@@ -32,7 +32,7 @@ const FormAd = () => {
   const [diplomaCourse, setDiplomaCourse] = useState([]);
   const [showSandbox, setShowSandbox] = useState(false);
   const [showDip, setShowDip] = useState(true);
-
+  const [advisor, setAdvisor] = useState({})
   const [readMore, setReadMore] = useState(false);
   const [country, setCountry] = useState([]);
   const [state, setState] = useState([]);
@@ -91,7 +91,7 @@ const FormAd = () => {
     phone_number: "",
     age_range: "",
     academy_level: "",
-    course_level: "diplomaplus",
+    course_level: "diploma",
     classF: "virtual_class",
     cohort: "",
     course: "",
@@ -101,24 +101,26 @@ const FormAd = () => {
     state: "Lagos State",
   });
 
-  //display course level
-  useEffect(() => {
-    if (getSandbox === "1") {
-      setShowDip(false);
-      setShowSandbox(true);
-      setFee({
-        name: formD.course,
-      });
-      physicalref.current.style.display = "none";
-      payBody.current.style.display = "none";
-      diplomaplusref.current.style.display = "none";
-      diplomaplusref.current.style.display = "none";
-      formD.course_level = "sandbox";
-    }
-  }, [showSandbox, getSandbox, showDip, formD]);
 
+  //display course level
+  // useEffect(() => {
+  //   if (getSandbox === "1") {
+  //     setShowDip(false);
+  //     setShowSandbox(true);
+  //     setFee({
+  //       name: formD.course,
+  //     });
+  //     physicalref.current.style.display = "none";
+  //     payBody.current.style.display = "none";
+  //     diplomaplusref.current.style.display = "none";
+  //     diplomaplusref.current.style.display = "none";
+  //     formD.course_level = "sandbox";
+  //   }
+  // }, [showSandbox, getSandbox, showDip, formD]);
+
+ 
   // countries list
-  useEffect(() => {
+   useEffect(() => {
     fetch("https://countriesnow.space/api/v0.1/countries/states")
       .then((response) => response.json())
       .then((result) => {
@@ -132,23 +134,32 @@ const FormAd = () => {
     fetch("https://backend.pluralcode.institute/course-list")
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        console.log(result)
         setSandbox(result?.sandboxonly);
         setDiplomaCourse(result?.diplomacourses);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  //diploma + sandbox list
   useEffect(() => {
-    const arr = [];
-    diplomaCourse.map((each) => {
-      if (each.sandbox_status === 1) {
-        arr.push(each);
-      }
-      return setDiplomaPlusCourse(arr);
-    });
-  }, [diplomaCourse]);
+    fetch(`https://backend.pluralcode.institute/get_advisor_info?ref_id=${referral}`)
+      .then((response) => response.json())
+      .then((result) => {
+        setAdvisor(result?.advisor_details)
+      })
+      .catch((error) => console.log(error))
+  }, [referral])
+
+  // //diploma + sandbox list
+  // useEffect(() => {
+  //   const arr = [];
+  //   diplomaCourse.map((each) => {
+  //     if (each.sandbox_status === 1) {
+  //       arr.push(each);
+  //     }
+  //     return setDiplomaPlusCourse(arr);
+  //   });
+  // }, [diplomaCourse]);
 
   // cohort list
   useEffect(() => {
@@ -161,18 +172,18 @@ const FormAd = () => {
   }, []);
 
   // diploma + sandbox courses
-  const dipplusC = diplomaPlusCourse?.map((eachC) => {
-    return (
-      <option
-        key={eachC.id}
-        value={eachC.name}
-        id={eachC.id}
-        className="w-full"
-      >
-        {eachC.name}
-      </option>
-    );
-  });
+  // const dipplusC = diplomaPlusCourse?.map((eachC) => {
+  //   return (
+  //     <option
+  //       key={eachC.id}
+  //       value={eachC.name}
+  //       id={eachC.id}
+  //       className="w-full"
+  //     >
+  //       {eachC.name}
+  //     </option>
+  //   );
+  // });
   //diploma courses
   const dipC = diplomaCourse?.map((eachC) => {
     return (
@@ -186,7 +197,7 @@ const FormAd = () => {
       </option>
     );
   });
-  console.log(formD);
+
 
   const handleForm = (event) => {
     setErrMsg("");
@@ -201,22 +212,25 @@ const FormAd = () => {
     setErrMsgS("");
     const { name, value } = event.target;
     // dropdown for course level
-    if (formD.course_level === "sandbox") {
-      payBody.current.style.display = "none";
-      physicalref.current.style.display = "none";
-    } else if (value === "diploma") {
-      diplomaref.current.style.display = "block";
-      diplomaplusref.current.style.display = "none";
-      payBody.current.style.display = "block";
-      formD.course = "";
-      setFee([]);
-    }else if (value === "diplomaplus") {
-      diplomaplusref.current.style.display = "block";
-      diplomaref.current.style.display = "none";
-      payBody.current.style.display = "block";
-      formD.course = "";
-      setFee([]);
-    }
+    // if (formD.course_level === "sandbox") {
+    //   payBody.current.style.display = "none";
+    //   physicalref.current.style.display = "none";
+    // } else if (value === "diploma") {
+    //   diplomaref.current.style.display = "block";
+    //   diplomaplusref.current.style.display = "none";
+    //   payBody.current.style.display = "block";
+    //   formD.course = "";
+    //   setFee([]);
+    // }else if (value === "diplomaplus") {
+    //   diplomaplusref.current.style.display = "block";
+    //   diplomaref.current.style.display = "none";
+    //   payBody.current.style.display = "block";
+    //   formD.course = "";
+    //   setFee([]);
+    // }
+
+    payBody.current.style.display = "block";
+
 
     //for part payment
     if (value === "part_payment") {
@@ -253,6 +267,7 @@ const FormAd = () => {
             (each) => each.name === formD.country && setState(each.states)
           );
       }
+
       // for currency
       if (formD.country === "Nigeria") {
         nairaref.current.style.display = "block";
@@ -265,8 +280,12 @@ const FormAd = () => {
       if (formD.course_level === "sandbox") {
         formD.classF = "virtual_class";
         physicalref.current.style.display = "none";
-      } else if (formD.state === "Lagos State" && formD.country === "Nigeria") {
+      } else if (formD.state === "Lagos State" && formD.country === "Nigeria" && fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn.hasOwnProperty('onsite_course_fee_ngn')
+      ) {
         physicalref.current.style.display = "block";
+      } else if (formD.state === "Lagos State" && formD.country === "Nigeria" && fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn.hasOwnProperty('onsite_course_fee_ngn') === false
+      ) {
+        physicalref.current.style.display = "none";
       } else if (formD.state !== "Lagos State") {
         formD.classF = "virtual_class";
         physicalref.current.style.display = "none";
@@ -282,165 +301,166 @@ const FormAd = () => {
           .filter((each) => each.name === formD.course && setFee(each));
       }
 
+
       // for ngn
 
-      if (
-        formD.currency === "ngn" &&
-        formD.classF === "physical_class" &&
-        formD.payment_plan === "full_payment" &&
-        formD.course_level === "diplomaplus"
-      ) {
-        setEachFee((prev) => {
-          return {
-            ...prev,
-            partpaymentbalancepercentage: 30,
-            partpaymentpercentage: 70,
-            offset: fee?.actual_combo_course_fee_ngn_onsite,
-            discount_deadline: fee?.combo_discount_deadline,
-            amountDue:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_course_full_payment_fees_ngn
-                ?.combo_onsite_course_fee_ngn,
-            subtotal:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_course_full_payment_fees_ngn
-                ?.combo_onsite_course_fee_ngn,
-            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-              ?.onsite_course_vat_fee_ngn,
-            transaction:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_course_full_payment_fees_ngn
-                ?.combo_onsite_course_transaction_fee_ngn,
-            total:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_course_full_payment_fees_ngn
-                ?.combo_onsite_course_total_fee_ngn,
-            balance:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_part_paymentcourse_fees_ngn
-                ?.combo_onsitebalance_ngn,
-            sign: <span>&#8358;</span>,
-            usd: "",
-          };
-        });
-      } else if (
-        formD.currency === "ngn" &&
-        formD.classF === "physical_class" &&
-        formD.payment_plan === "part_payment" &&
-        formD.course_level === "diplomaplus"
-      ) {
-        setEachFee((prev) => {
-          return {
-            ...prev,
-            partpaymentbalancepercentage: 30,
-            partpaymentpercentage: 70,
-            offset: fee?.actual_combo_course_fee_ngn_onsite,
-            discount_deadline: fee?.combo_discount_deadline,
-            amountDue:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_part_paymentcourse_fees_ngn
-                ?.combo_onsite_part_payment_course_fee_ngn_due_amount,
-            subtotal:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_part_paymentcourse_fees_ngn
-                ?.combo_onsite_part_payment_course_fee,
-            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-              ?.onsite_course_vat_fee_ngn,
-            transaction:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_part_paymentcourse_fees_ngn
-                ?.combo_onsite_part_payment_course_transaction_fee_ngn,
-            total:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_part_paymentcourse_fees_ngn
-                ?.combo_onsite_part_payment_course_total_fee_ngn,
-            balance:
-              fee?.combo_course_onsite_fees
-                ?.combo_onsite_part_paymentcourse_fees_ngn
-                ?.combo_onsitebalance_ngn,
-            sign: <span>&#8358;</span>,
-            usd: "",
-          };
-        });
-      } else if (
-        formD.currency === "ngn" &&
-        formD.classF === "virtual_class" &&
-        formD.payment_plan === "full_payment" &&
-        formD.course_level === "diplomaplus"
-      ) {
-        setEachFee((prev) => {
-          return {
-            ...prev,
-            partpaymentbalancepercentage: 30,
-            partpaymentpercentage: 70,
-            offset: fee?.actual_combo_course_fee_ngn_virtual,
-            discount_deadline: fee?.combo_discount_deadline,
-            amountDue:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_course_full_payment_fees_ngn
-                ?.combo_virtual_course_fee_ngn,
-            subtotal:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_course_full_payment_fees_ngn
-                ?.combo_virtual_course_total_fee_ngn,
-            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-              ?.onsite_course_vat_fee_ngn,
-            transaction:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_course_full_payment_fees_ngn
-                ?.combo_virtual_course_transaction_fee_ngn,
-            total:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_course_full_payment_fees_ngn
-                ?.combo_virtual_course_total_fee_ngn,
-            balance:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_course_full_payment_fees_ngn
-                ?.combo_virtual_part_payment_course_transaction_fee_ngn,
-            sign: <span>&#8358;</span>,
-            usd: "",
-          };
-        });
-      } else if (
-        formD.currency === "ngn" &&
-        formD.classF === "virtual_class" &&
-        formD.payment_plan === "part_payment" &&
-        formD.course_level === "diplomaplus"
-      ) {
-        setEachFee((prev) => {
-          return {
-            ...prev,
-            partpaymentbalancepercentage: 30,
-            partpaymentpercentage: 70,
-            offset: fee?.actual_combo_course_fee_ngn_onsite,
-            discount_deadline: fee?.combo_discount_deadline,
-            amountDue:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_part_paymentcourse_fees_ngn
-                ?.combo_virtual_part_payment_course_fee_ngn_due_amount,
-            subtotal:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_part_paymentcourse_fees_ngn
-                ?.combo_virtual_part_payment_course_fee,
-            vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
-              ?.onsite_course_vat_fee_ngn,
-            transaction:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_part_paymentcourse_fees_ngn
-                ?.combo_virtual_part_payment_course_transaction_fee_ngn,
-            total:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_part_paymentcourse_fees_ngn
-                ?.combo_virtual_part_payment_course_total_fee_ngn,
-            balance:
-              fee?.course_combo_virtual_fee
-                ?.combo_virtual_part_paymentcourse_fees_ngn
-                ?.combo_virtualbalance_ngn,
-            sign: <span>&#8358;</span>,
-            usd: "",
-          };
-        });
-      }
+      // if (
+      //   formD.currency === "ngn" &&
+      //   formD.classF === "physical_class" &&
+      //   formD.payment_plan === "full_payment" &&
+      //   formD.course_level === "diplomaplus"
+      // ) {
+      //   setEachFee((prev) => {
+      //     return {
+      //       ...prev,
+      //       partpaymentbalancepercentage: 30,
+      //       partpaymentpercentage: 70,
+      //       offset: fee?.actual_combo_course_fee_ngn_onsite,
+      //       discount_deadline: fee?.combo_discount_deadline,
+      //       amountDue:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_course_full_payment_fees_ngn
+      //           ?.combo_onsite_course_fee_ngn,
+      //       subtotal:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_course_full_payment_fees_ngn
+      //           ?.combo_onsite_course_fee_ngn,
+      //       vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+      //         ?.onsite_course_vat_fee_ngn,
+      //       transaction:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_course_full_payment_fees_ngn
+      //           ?.combo_onsite_course_transaction_fee_ngn,
+      //       total:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_course_full_payment_fees_ngn
+      //           ?.combo_onsite_course_total_fee_ngn,
+      //       balance:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_part_paymentcourse_fees_ngn
+      //           ?.combo_onsitebalance_ngn,
+      //       sign: <span>&#8358;</span>,
+      //       usd: "",
+      //     };
+      //   });
+      // } else if (
+      //   formD.currency === "ngn" &&
+      //   formD.classF === "physical_class" &&
+      //   formD.payment_plan === "part_payment" &&
+      //   formD.course_level === "diplomaplus"
+      // ) {
+      //   setEachFee((prev) => {
+      //     return {
+      //       ...prev,
+      //       partpaymentbalancepercentage: 30,
+      //       partpaymentpercentage: 70,
+      //       offset: fee?.actual_combo_course_fee_ngn_onsite,
+      //       discount_deadline: fee?.combo_discount_deadline,
+      //       amountDue:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_part_paymentcourse_fees_ngn
+      //           ?.combo_onsite_part_payment_course_fee_ngn_due_amount,
+      //       subtotal:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_part_paymentcourse_fees_ngn
+      //           ?.combo_onsite_part_payment_course_fee,
+      //       vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+      //         ?.onsite_course_vat_fee_ngn,
+      //       transaction:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_part_paymentcourse_fees_ngn
+      //           ?.combo_onsite_part_payment_course_transaction_fee_ngn,
+      //       total:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_part_paymentcourse_fees_ngn
+      //           ?.combo_onsite_part_payment_course_total_fee_ngn,
+      //       balance:
+      //         fee?.combo_course_onsite_fees
+      //           ?.combo_onsite_part_paymentcourse_fees_ngn
+      //           ?.combo_onsitebalance_ngn,
+      //       sign: <span>&#8358;</span>,
+      //       usd: "",
+      //     };
+      //   });
+      // } else if (
+      //   formD.currency === "ngn" &&
+      //   formD.classF === "virtual_class" &&
+      //   formD.payment_plan === "full_payment" &&
+      //   formD.course_level === "diplomaplus"
+      // ) {
+      //   setEachFee((prev) => {
+      //     return {
+      //       ...prev,
+      //       partpaymentbalancepercentage: 30,
+      //       partpaymentpercentage: 70,
+      //       offset: fee?.actual_combo_course_fee_ngn_virtual,
+      //       discount_deadline: fee?.combo_discount_deadline,
+      //       amountDue:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_course_full_payment_fees_ngn
+      //           ?.combo_virtual_course_fee_ngn,
+      //       subtotal:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_course_full_payment_fees_ngn
+      //           ?.combo_virtual_course_total_fee_ngn,
+      //       vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+      //         ?.onsite_course_vat_fee_ngn,
+      //       transaction:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_course_full_payment_fees_ngn
+      //           ?.combo_virtual_course_transaction_fee_ngn,
+      //       total:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_course_full_payment_fees_ngn
+      //           ?.combo_virtual_course_total_fee_ngn,
+      //       balance:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_course_full_payment_fees_ngn
+      //           ?.combo_virtual_part_payment_course_transaction_fee_ngn,
+      //       sign: <span>&#8358;</span>,
+      //       usd: "",
+      //     };
+      //   });
+      // } else if (
+      //   formD.currency === "ngn" &&
+      //   formD.classF === "virtual_class" &&
+      //   formD.payment_plan === "part_payment" &&
+      //   formD.course_level === "diplomaplus"
+      // ) {
+      //   setEachFee((prev) => {
+      //     return {
+      //       ...prev,
+      //       partpaymentbalancepercentage: 30,
+      //       partpaymentpercentage: 70,
+      //       offset: fee?.actual_combo_course_fee_ngn_onsite,
+      //       discount_deadline: fee?.combo_discount_deadline,
+      //       amountDue:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_part_paymentcourse_fees_ngn
+      //           ?.combo_virtual_part_payment_course_fee_ngn_due_amount,
+      //       subtotal:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_part_paymentcourse_fees_ngn
+      //           ?.combo_virtual_part_payment_course_fee,
+      //       vat: fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn
+      //         ?.onsite_course_vat_fee_ngn,
+      //       transaction:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_part_paymentcourse_fees_ngn
+      //           ?.combo_virtual_part_payment_course_transaction_fee_ngn,
+      //       total:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_part_paymentcourse_fees_ngn
+      //           ?.combo_virtual_part_payment_course_total_fee_ngn,
+      //       balance:
+      //         fee?.course_combo_virtual_fee
+      //           ?.combo_virtual_part_paymentcourse_fees_ngn
+      //           ?.combo_virtualbalance_ngn,
+      //       sign: <span>&#8358;</span>,
+      //       usd: "",
+      //     };
+      //   });
+      // }
       //  for ngn diploma
       if (
         formD.currency === "ngn" &&
@@ -1076,7 +1096,7 @@ const FormAd = () => {
     gg();
   }, [formD, fee, country, diplomaPlusCourse, diplomaCourse, sandbox]);
 
-  console.log(eachFee);
+
   //to check if any course has just one class format
   // useEffect(() => {
   //   if (!fee?.course_onsite_fees?.onsite_course_full_payment_fees_ngn?.onsite_course_fee_ngn || !fee?.course_onsite_fees?.onsite_course_full_payment_fees_usd?.onsite_course_fee_usd) {
@@ -1137,7 +1157,6 @@ const FormAd = () => {
   var options = {
     max: 987, // example input , yes negative values do work
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const sp = document.querySelector("#spinn");
@@ -1179,7 +1198,7 @@ const FormAd = () => {
       } else if (formD.cohort === "") {
         setErrMsgCh("Cohort required!");
         setErrMsg("All fields required!");
-      } else if (duplicate !== "No records found") {
+      } else if (!(advisor?.hasOwnProperty('referral_code'))) { setErrMsg("Referral ID required!") } else if (duplicate !== "No records found") {
         setErrMsg("You are already enrolled in this course!");
       } else if (formD.currency === "usd" || formD.currency === "ngn") {
         sp.style.display = "block";
@@ -1190,19 +1209,13 @@ const FormAd = () => {
           amount: eachFee.total,
           currency: formD.currency.toUpperCase(),
           title: formD.course + " Enrollment",
-          redirect_url: `https://pluralcode.academy/admissions/payment?name=${
-            formD.full_name
-          }&email=${formD.email}&phone_number=${formD.phone_number}&mode=${
-            formD.classF
-          }&course=${formD.course}&country=${formD.country}&state=${
-            formD.state
-          }&currency=${formD.currency.toUpperCase()}&cohort_id=${
-            formD.cohort
-          }&courseid=${fee.id}&program=${formD.course_level}&academy=${
-            formD.academy_level
-          }&balance=${eachFee.balance}&total=${eachFee.total}&age=${
-            formD.age_range
-          }&pay=${formD.payment_plan}&ref=${referral}`,
+          redirect_url: `https://pluralcode.academy/admissions/payment?name=${formD.full_name
+            }&email=${formD.email}&phone_number=${formD.phone_number}&mode=${formD.classF
+            }&course=${formD.course}&country=${formD.country}&state=${formD.state
+            }&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort
+            }&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level
+            }&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range
+            }&pay=${formD.payment_plan}&ref=${advisor?.referral_code}`,
           email: formD.email,
           phonenumber: formD.phone_number,
           name: formD.full_name,
@@ -1238,19 +1251,13 @@ const FormAd = () => {
         const raw = JSON.stringify({
           amount: eachFee.amountDue,
           baseFiat: "USD",
-          redirectLink: `pluralcode.academy/admissions/payment?name=${fullname}&email=${
-            formD.email
-          }&phone_number=${formD.phone_number}&mode=${
-            formD.classF
-          }&course=${cour}&country=${
-            formD.country
-          }&state=${st}&currency=${formD.currency.toUpperCase()}&cohort_id=${
-            formD.cohort
-          }&courseid=${fee.id}&program=${formD.course_level}&academy=${
-            formD.academy_level
-          }&balance=${eachFee.balance}&total=${eachFee.total}&age=${
-            formD.age_range
-          }&pay=${formD.payment_plan}&ref=${referral}`,
+          redirectLink: `pluralcode.academy/admissions/payment?name=${fullname}&email=${formD.email
+            }&phone_number=${formD.phone_number}&mode=${formD.classF
+            }&course=${cour}&country=${formD.country
+            }&state=${st}&currency=${formD.currency.toUpperCase()}&cohort_id=${formD.cohort
+            }&courseid=${fee.id}&program=${formD.course_level}&academy=${formD.academy_level
+            }&balance=${eachFee.balance}&total=${eachFee.total}&age=${formD.age_range
+            }&pay=${formD.payment_plan}&ref=${advisor?.referral_code}`,
           name: formD.full_name,
           description: formD.course,
         });
@@ -1281,7 +1288,8 @@ const FormAd = () => {
       setErrMsg("Box must be checked!");
     }
   };
-  console.log(fee);
+
+
 
   return (
     <>
@@ -1478,7 +1486,7 @@ const FormAd = () => {
                   </div>
                 </div>
 
-                <div className="ad-input flex flex-col py-2 lg:py-3">
+                {/* <div className="ad-input flex flex-col py-2 lg:py-3">
                   <label className="textdark pb-2">Course Level</label>
                   <div className="flex gap-8">
                     {showDip && (
@@ -1503,7 +1511,7 @@ const FormAd = () => {
                         <div className="">
                           <label className="container text-base ten">
                             Diploma
-                            {/* <span className="eight text-xs">(Beginner)</span> */}
+                            <span className="eight text-xs">(Beginner)</span> 
                             <input
                               type="radio"
                               required
@@ -1550,7 +1558,7 @@ const FormAd = () => {
                       {readMore ? "Show Less" : "Read More"}
                     </span>
 
-                    {/* Diploma Benefits */}
+                     Diploma Benefits 
                     {readMore && (
                       <div className="mt-4 md:w-96 border border-black rounded-3xl p-4 md:p-8">
                         <Text
@@ -1638,7 +1646,7 @@ const FormAd = () => {
                       {readMore ? "Show Less" : "Read More"}
                     </span>
 
-                    {/*Diploma plus Benefits */}
+                    {/*Diploma plus Benefits 
                     {readMore && (
                       <div className="mt-4 border border-black rounded-3xl p-2 lg:p-4 xl:p-8">
                         <Text
@@ -1762,7 +1770,7 @@ const FormAd = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="ad-input flex flex-col py-2 lg:py-3">
                   <label className="textdark pb-2">Course Of Interest</label>
@@ -1776,8 +1784,7 @@ const FormAd = () => {
                     <option value="" className="dptext">
                       Select your course of interest
                     </option>
-
-                    {formD.course_level === "diplomaplus" ? dipplusC : dipC}
+                    {dipC}
                   </select>
                   <p className="text-red-600">{errMsgCo}</p>
                 </div>
@@ -1944,8 +1951,8 @@ const FormAd = () => {
                   <label className="textdark pb-2">Referral Code</label>
                   <input
                     type="text"
-                    value={referral ? referral : ""}
-                    placeholder="GSHJSJK"
+                    value={advisor?.name}
+                    placeholder=""
                     className="p-3 lg:px-7 lg:py-4 outline-offset-2 outline-slate-500"
                     disabled
                   />
@@ -2003,7 +2010,15 @@ const FormAd = () => {
                     {eachFee.usd}
                   </button>
                 </div>
+
               </form>
+              <div className="block lg:hidden  w-full md:w-96 m-auto rounded-xl pb-2">
+                <Link to={`https://wa.me/${advisor?.contact_details?.slice(1)}`} target="_blank"><button
+                  className="border border-seccolor text-seccolor bg-white justify-center flex gap-1 items-center w-full py-3 md:py-4 rounded-xl hover:bg-seccolor hover:text-white"
+                >
+                  Contact Support
+                </button></Link>
+              </div>
             </div>
           </div>
 
@@ -2131,6 +2146,14 @@ const FormAd = () => {
                     {numFor.format(isNaN(eachFee.total) ? 0 : eachFee.total)}{" "}
                     {eachFee.usd}
                   </button>
+                </div>
+                <div className="w-full md:w-96 m-auto rounded-xl pt-4">
+                  <Link to={`https://wa.me/${advisor?.contact_details?.slice(1)}`} target="_blank"><button
+                    className="border border-seccolor text-seccolor bg-white justify-center flex gap-1 items-center w-full py-3 md:py-4 rounded-xl hover:bg-seccolor hover:text-white"
+                  >
+
+                    Contact Support
+                  </button></Link>
                 </div>
               </div>
             </div>
